@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>FuryKanban</title>
+    <base href="/" />
+    <link href="css/coreui/css/coreui.css" rel="stylesheet" />
+    <style>
+		.testimonial-group > .row {
+			display: flex;
+			flex-wrap: nowrap;
+			overflow-x: auto;
+		}
+
+			.testimonial-group > .row > .col-xs-4 {
+				flex: 0 0 auto;
+                width:300px;
+			}
+
+		/* Decorations */
+		.col-xs-4 {
+			color: #fff;
+			font-size: 48px;
+			padding-bottom: 20px;
+			padding-top: 18px;
+		}
+
+			.col-xs-4:nth-child(3n+1) {
+				background: #c69;
+			}
+
+			.col-xs-4:nth-child(3n+2) {
+				background: #9c6;
+			}
+
+			.col-xs-4:nth-child(3n+3) {
+				background: #69c;
+			}
+    </style>
+</head>
+<body class="c-app c-dark-theme flex-row align-items-center">
+	<app>Loading...</app>
+
+	<!--//todo- uncomment and check why it not hided
+	<div id="blazor-error-ui">
+		An unhandled error has occurred.
+		<a href="" class="reload">Reload</a>
+		<a class="dismiss">🗙</a>
+	</div>-->
+
+	<!--//todo- delete is all ok-->
+	<!--<script src="http://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+	<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"  crossorigin="anonymous"></script>-->
+	<script src="css/coreui/js/coreui.js"></script>
+	<script src="_framework/blazor.webassembly.js"></script>
+
+</body>
+</html>
