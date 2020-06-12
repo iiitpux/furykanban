@@ -1,0 +1,19 @@
+﻿<div class="@CssClass" role="alert">@Text</div>
+@code {
+	[Parameter]
+	public string Text { set; get; }
+
+	[Parameter]
+	public string Type { set; get; }
+
+	public string CssClass { set; get; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		//todo- add enum types
+		if(Type.ToLower()=="danger")
+		{
+			CssClass = "alert alert-danger";
+		}
+	}
+}

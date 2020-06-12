@@ -8,6 +8,6 @@ namespace FuryKanban.Logic
 {
 	public interface ISecurityService
 	{
-		Task<bool> RegistrationAsync(RegistrationModel registration);
+		Task<RegistrationResponse> RegistrationAsync(RegistrationRequest registration);
 	}
 }

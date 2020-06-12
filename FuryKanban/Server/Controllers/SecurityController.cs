@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FuryKanban.Logic;
 using FuryKanban.Shared.Model.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FuryKanban.Server.Controllers
 {
@@ -14,26 +16,34 @@ namespace FuryKanban.Server.Controllers
 	public class SecurityController : ControllerBase
 	{
 		private ISecurityService _securityService;
+		private ILogger<SecurityController> _logger;
 
-		public SecurityController(ISecurityService securityService)
+		public SecurityController(ISecurityService securityService, ILogger<SecurityController> logger)
 		{
 			_securityService = securityService;
+			_logger = logger;
 		}
 
-		[HttpGet]
-		public RegistrationModel Get()
+		[HttpPost("registration")]
+		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest registrationRequest)
 		{
-			return new RegistrationModel() { 
-				Login = "123",
-				Password = "123"
-			};
-			//return await _securityService.RegistrationAsync(registration);
+			return await _securityService.RegistrationAsync(registrationRequest);
 		}
-
-		[HttpPost("{login}")]
-		public async Task<bool> TryLogin(LoginModel login)
-		{
-			return false;
-		}
+		
+		// [HttpGet]
+		// public RegistrationRequest Get()
+		// {
+		// 	return new RegistrationRequest() { 
+		// 		Login = "123",
+		// 		Password = "123"
+		// 	};
+		// 	//return await _securityService.RegistrationAsync(registration);
+		// }
+		//
+		// [HttpPost("{login}")]
+		// public async Task<bool> TryLogin(LoginRequest login)
+		// {
+		// 	return false;
+		// }
 	}
 }

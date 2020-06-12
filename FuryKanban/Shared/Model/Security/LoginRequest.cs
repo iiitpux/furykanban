@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FuryKanban.Shared.Model.Security
 {
-	public class RegistrationModel
+	public class LoginRequest
 	{
 		public string Login { set; get; }
 		public string Password { set; get; }

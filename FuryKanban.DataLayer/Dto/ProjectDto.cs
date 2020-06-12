@@ -15,9 +15,5 @@ namespace FuryKanban.DataLayer.Dto
         public virtual List<StageDto> Stages { set; get; }
         
         public bool IsSelected { set; get; }
-
-        public int AccountId { set; get; }
-        
-        public AccountDto Account { set; get; }
     }
 }

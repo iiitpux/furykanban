@@ -7,7 +7,15 @@
     <title>FuryKanban</title>
     <base href="/" />
     <link href="css/coreui/css/coreui.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
     <style>
+		/*//todo- move stop app.css*/
+		.middle-box{
+			margin:auto;
+			margin-top:150px;
+			width:700px;
+		}
+
 		.testimonial-group > .row {
 			display: flex;
 			flex-wrap: nowrap;
@@ -40,8 +48,8 @@
 			}
     </style>
 </head>
-<body class="c-app c-dark-theme flex-row align-items-center">
-	<app>Loading...</app>
+<body class="c-app c-dark-theme">
+	<app class="c-wrapper">Loading...</app>
 
 	<!--//todo- uncomment and check why it not hided
 	<div id="blazor-error-ui">

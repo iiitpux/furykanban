@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuryKanban.Server", "FuryKanban\Server\FuryKanban.Server.csproj", "{A689E61E-CD75-459D-B677-2792C334AF75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Server", "FuryKanban\Server\FuryKanban.Server.csproj", "{A689E61E-CD75-459D-B677-2792C334AF75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuryKanban.Client", "FuryKanban\Client\FuryKanban.Client.csproj", "{47A1B420-51E3-4F5F-99F6-3A0A3874EA69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Client", "FuryKanban\Client\FuryKanban.Client.csproj", "{47A1B420-51E3-4F5F-99F6-3A0A3874EA69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuryKanban.Shared", "FuryKanban\Shared\FuryKanban.Shared.csproj", "{1F53DE18-CA76-47DD-9C34-374F27C803EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Shared", "FuryKanban\Shared\FuryKanban.Shared.csproj", "{1F53DE18-CA76-47DD-9C34-374F27C803EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuryKanban.DataLayer", "FuryKanban.DataLayer\FuryKanban.DataLayer.csproj", "{1BEE2E61-5F8F-428D-85CE-9FD4EF37B0EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.DataLayer", "FuryKanban.DataLayer\FuryKanban.DataLayer.csproj", "{1BEE2E61-5F8F-428D-85CE-9FD4EF37B0EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuryKanban.Logic", "FuryKanban.Logic\FuryKanban.Logic.csproj", "{249CC6B8-DC0E-4FCD-9D0C-E328987632DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Logic", "FuryKanban.Logic\FuryKanban.Logic.csproj", "{249CC6B8-DC0E-4FCD-9D0C-E328987632DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Common", "FuryKanban.Common\FuryKanban.Common.csproj", "{F23F8592-7BA6-4B9B-BDAA-90ABA979E3B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{249CC6B8-DC0E-4FCD-9D0C-E328987632DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{249CC6B8-DC0E-4FCD-9D0C-E328987632DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{249CC6B8-DC0E-4FCD-9D0C-E328987632DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F23F8592-7BA6-4B9B-BDAA-90ABA979E3B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F23F8592-7BA6-4B9B-BDAA-90ABA979E3B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F23F8592-7BA6-4B9B-BDAA-90ABA979E3B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F23F8592-7BA6-4B9B-BDAA-90ABA979E3B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

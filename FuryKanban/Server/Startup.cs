@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using FuryKanban.DataLayer;
 using FuryKanban.Logic;
+using Microsoft.Extensions.Logging;
 
 namespace FuryKanban.Server
 {
@@ -16,7 +17,7 @@ namespace FuryKanban.Server
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
-			//todo- так неверно не совсем правильно
+			//todo- пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			using (var client = new FkDbContext())
 			{
 				client.Database.EnsureCreated();
@@ -29,6 +30,7 @@ namespace FuryKanban.Server
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
+			//todo- add automapper
 			services.AddEntityFrameworkSqlite().AddDbContext<FkDbContext>();
 			services.AddScoped<ISecurityService, SecurityService>();
 
@@ -37,7 +39,7 @@ namespace FuryKanban.Server
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
 		{
 			if (env.IsDevelopment())
 			{

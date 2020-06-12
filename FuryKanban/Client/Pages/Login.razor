@@ -35,7 +35,7 @@
 								<button @onclick="TryLogin" class="btn btn-primary px-4" type="button">Login</button>
 							</div>
 							<div class="col-6 text-right">
-								<button class="btn btn-link px-0" type="button">Forgot password?</button>
+								<button class="btn btn-link px-0" type="button">Just see demo</button>
 							</div>
 						</div>
 					</div>
@@ -45,7 +45,7 @@
 						<div>
 							<h2>Sign up</h2>
 							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-							<button class="btn btn-lg btn-outline-light mt-3" type="button">Register Now!</button>
+							<NavLink href="registration" class="btn btn-lg btn-outline-light mt-3">Register Now!</NavLink>
 						</div>
 					</div>
 				</div>
@@ -56,7 +56,7 @@
 
 @code {
 	//todo- validate model
-	private FuryKanban.Shared.Model.Security.LoginModel _login = new FuryKanban.Shared.Model.Security.LoginModel()
+	private FuryKanban.Shared.Model.Security.LoginRequest _login = new FuryKanban.Shared.Model.Security.LoginRequest()
 	{
 		//todo- delete after testing
 		Login = "123",

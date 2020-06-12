@@ -11,13 +11,10 @@ namespace FuryKanban.DataLayer.Dto
         [Key]
         public int Id { set; get; }
 
-        [DisplayName("Логин")]
-        [Required(ErrorMessage = "Логин не должен быть пустым")]
+        [Required]
         public string Login { set; get; }
         
-        [DisplayName("Пароль")]
-        [Required(ErrorMessage = "Пароль не должен быть пустым")]
-        
+        [Required]
         public string Password { set; get; }
         
         public string Salt { set; get; }
@@ -25,9 +22,5 @@ namespace FuryKanban.DataLayer.Dto
         public bool Active { set; get; }
         
         public DateTime CreateDate { set; get; }
-        
-        public int AccountId { set; get; }
-
-        public AccountDto Account { set; get; }
     }
 }

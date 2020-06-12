@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using FuryKanban.Common;
 
 namespace FuryKanban.DataLayer
 {
     public class FkDbContext : DbContext
     {
-        public DbSet<AccountDto> Accounts { get; set; }
         public DbSet<IssueDto> Issues { get; set; }
         public DbSet<ProjectDto> Projects { get; set; }
         public DbSet<StageDto> Stages { get; set; }
@@ -40,11 +40,10 @@ namespace FuryKanban.DataLayer
             base.OnModelCreating(modelBuilder);
         }
 
-        public void CreateDefaultProject(int accountId, int userId)
+        public void CreateDefaultProject(int userId)
         {
             var project = new ProjectDto()
             {
-                AccountId = accountId,
                 Title = "Стартовая",
                 IsSelected = true
             };
@@ -110,9 +109,6 @@ namespace FuryKanban.DataLayer
         //todo перенести в logic
         public UserDto AddAccountOwnerUser(string login, string password)
         {
-            var account = new AccountDto();
-            this.Add(account);
-            this.SaveChanges();
             // добавим пользователя
             string salt = Guid.NewGuid().ToString();
             string passHash = Hashing.GetPasswordHash(password, salt);
@@ -121,37 +117,16 @@ namespace FuryKanban.DataLayer
                 Login = login.ToLower(),
                 Password = passHash,
                 CreateDate = DateTime.Now,
-                Salt = salt,
-                AccountId = account.Id
+                Salt = salt
             };
             this.Add(user);
             this.SaveChanges();
-            CreateDefaultProject(account.Id, user.Id);
+            CreateDefaultProject(user.Id);
             return user;
         }
 
 
-        public static class Hashing
-        {
-            #region SHA1
-            public static string GetSHA1(byte[] data)
-            {
-                SHA1 shaHasher = SHA1.Create();
-                byte[] hash = shaHasher.ComputeHash(data);
-
-                return BitConverter.ToString(hash).Replace("-", "");
-            }
-            public static string GetSHA1(string data)
-            {
-                byte[] byteData = System.Text.Encoding.UTF8.GetBytes(data);
-                return GetSHA1(byteData);
-            }
-            #endregion
-            public static string GetPasswordHash(string password, string salt)
-            {
-                return Hashing.GetSHA1(password + Hashing.GetSHA1(salt));
-            }
-        }
+        
 
     }
 }

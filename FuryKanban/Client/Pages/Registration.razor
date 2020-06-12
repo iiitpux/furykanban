@@ -1,6 +1,98 @@
-﻿@page "/registration"
-<h3>Registration</h3>
+﻿@layout LoginLayout
+@page "/registration"
+@using FuryKanban.Shared.Model.Security
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<div class="card mx-4">
+				<div class="card-body p-4">
+					<h1>Register</h1>
+					<p class="text-muted">Create your account</p>
+					<EditForm model="@_registrationRequest" OnValidSubmit="HandleValidSubmit">
+						<DataAnnotationsValidator />
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text">
+									<svg class="c-icon">
+										<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-user"></use>
+									</svg>
+								</span>
+							</div>
+							<InputText id="Login" @bind-Value="_registrationRequest.Login" class="form-control" placeholder="Login"></InputText>
+							<br />
+							<ValidationMessage For="@(() => _registrationRequest.Login)" />
+						</div>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text">
+									<svg class="c-icon">
+										<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-lock-locked"></use>
+									</svg>
+								</span>
+							</div>
+							<input @bind="_registrationRequest.Password" class="form-control" type="password" placeholder="Password">
+						</div>
+						<div class="input-group mb-4">
+							<div class="input-group-prepend">
+								<span class="input-group-text">
+									<svg class="c-icon">
+										<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-lock-locked"></use>
+									</svg>
+								</span>
+							</div>
+							<input @bind="_registrationRequest.ConfirmPassword" class="form-control" type="password" placeholder="Repeat password">
+						</div>
+						@if (_showAlert)
+						{
+							<Alert Text="@_errorMessage" Type="danger"></Alert>
+						}
+						@if (_isLoading)
+						{
+							<div class="input-group mb-4 justify-content-center">
+								<div class="spinner-border spinner-border-sm" role="status">
+									<span class="sr-only">Loading...</span>
+								</div>
+							</div>
+						}
+						else
+						{
+							<button type="submit" class="btn btn-block btn-success">Create Account</button>
+						}
+					</EditForm>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 @code {
+	private RegistrationRequest _registrationRequest = new RegistrationRequest();
+	private bool _showAlert = false;
+	private bool _isLoading = false;
+	private string _errorMessage = "";
 
+	private async Task HandleValidSubmit()
+	{
+		_isLoading = true;
+		var response = await Http.PostAsJsonAsync("api/security/registration", _registrationRequest);
+		if (response.IsSuccessStatusCode)
+		{
+			var content = await response.Content.ReadFromJsonAsync<RegistrationResponse>();
+			if (!content.HasError)
+				NavigationManager.NavigateTo("app");
+			else
+			{
+				_errorMessage = content.ErrorMessage;
+				_showAlert = true;
+			}
+		}
+		else
+		{
+			_errorMessage = response.StatusCode.ToString();
+			_showAlert = true;
+		}
+		_isLoading = false;
+	}
 }
