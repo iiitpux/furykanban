@@ -22,5 +22,7 @@ namespace FuryKanban.DataLayer.Dto
         public bool Active { set; get; }
         
         public DateTime CreateDate { set; get; }
+
+        public virtual List<TokenDto> Tokens { set; get; } = new List<TokenDto>();
     }
 }

@@ -3,6 +3,9 @@
 @using FuryKanban.Shared.Model.Security
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime;
+@inject ApiAuthenticationStateProvider asp;
+
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-md-6">
@@ -81,7 +84,13 @@
 		{
 			var content = await response.Content.ReadFromJsonAsync<RegistrationResponse>();
 			if (!content.HasError)
+			{
+				//todo- max-age to settings
+				await JsRuntime.InvokeAsync<string>("addCookie", "token=" + content.Token + "; max-age=3600");
+				var tok = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+				asp.MarkUserAsAuthenticated();
 				NavigationManager.NavigateTo("app");
+			}
 			else
 			{
 				_errorMessage = content.ErrorMessage;

@@ -14,18 +14,28 @@ namespace FuryKanban.Logic
 {
 	public class SecurityService : ISecurityService
 	{
-		private FkDbContext _fkDbContext;
+		private AppDbContext _appDbContext;
 		private ILogger<SecurityService> _logger;
 
-		public SecurityService(FkDbContext fkDbContext, ILogger<SecurityService> logger)
+		public SecurityService(AppDbContext fkDbContext, ILogger<SecurityService> logger)
 		{
-			_fkDbContext = fkDbContext;
+			_appDbContext = fkDbContext;
 			_logger = logger;
+		}
+
+		public async Task<int?> GetUserIdByTokenAsync(string token)
+		{
+			var existToken = await _appDbContext.Tokens.SingleOrDefaultAsync(p => p.Code == token);
+			if(existToken != null)
+			{
+				return existToken.UserId;
+			}
+			return null;
 		}
 
 		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest registration)
 		{
-			var user = await _fkDbContext.Users.SingleOrDefaultAsync(p => p.Login == registration.Login);
+			var user = await _appDbContext.Users.SingleOrDefaultAsync(p => p.Login == registration.Login);
 			if(user != null)
 				return new RegistrationResponse(){HasError = true, ErrorMessage = "User with same login already exist"};
 			
@@ -39,6 +49,13 @@ namespace FuryKanban.Logic
 				CreateDate = DateTime.Now
 			};
 
+			var token = new TokenDto() { 
+				Code = Guid.NewGuid().ToString(),
+				CreatedDate = DateTime.Now
+			};
+
+			newUser.Tokens.Add(token);
+
 			var isValid = ValidationChecker.Check<UserDto>(newUser, out var results);
 			if (!isValid)
 			{
@@ -46,8 +63,8 @@ namespace FuryKanban.Logic
 				return new RegistrationResponse(){HasError = true, ErrorMessage = "Server error"};
 			}
 				
-			await _fkDbContext.AddAsync<UserDto>(newUser);
-			await _fkDbContext.SaveChangesAsync();
+			await _appDbContext.AddAsync<UserDto>(newUser);
+			await _appDbContext.SaveChangesAsync();
 
 			return new RegistrationResponse();
 		}

@@ -9,5 +9,6 @@ namespace FuryKanban.Logic
 	public interface ISecurityService
 	{
 		Task<RegistrationResponse> RegistrationAsync(RegistrationRequest registration);
+		Task<int?> GetUserIdByTokenAsync(string token);
 	}
 }

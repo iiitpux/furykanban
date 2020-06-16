@@ -9,6 +9,9 @@ using System.Linq;
 using FuryKanban.DataLayer;
 using FuryKanban.Logic;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FuryKanban.Server
 {
@@ -18,7 +21,7 @@ namespace FuryKanban.Server
 		{
 			Configuration = configuration;
 			//todo- ��� ������� �� ������ ���������
-			using (var client = new FkDbContext())
+			using (var client = new AppDbContext())
 			{
 				client.Database.EnsureCreated();
 			}
@@ -31,8 +34,12 @@ namespace FuryKanban.Server
 		public void ConfigureServices(IServiceCollection services)
 		{
 			//todo- add automapper
-			services.AddEntityFrameworkSqlite().AddDbContext<FkDbContext>();
+			services.AddEntityFrameworkSqlite().AddDbContext<AppDbContext>();
+			//services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+			//	.AddCookie();
+			services.AddAuthorization();
 			services.AddScoped<ISecurityService, SecurityService>();
+			services.AddScoped<AuthUser>();
 
 			services.AddControllersWithViews();
 			services.AddRazorPages();
@@ -53,11 +60,22 @@ namespace FuryKanban.Server
 				app.UseHsts();
 			}
 
+			//
+			//var cookiePolicyOptions = new CookiePolicyOptions
+			//{
+			//	MinimumSameSitePolicy = SameSiteMode.Strict,
+			//};
+			//app.UseCookiePolicy(cookiePolicyOptions);
+
+
 			app.UseHttpsRedirection();
 			app.UseBlazorFrameworkFiles();
 			app.UseStaticFiles();
 
 			app.UseRouting();
+
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{
