@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using FuryKanban.Server.Logic;
 
 namespace FuryKanban.Server
 {
@@ -39,6 +40,8 @@ namespace FuryKanban.Server
 			//	.AddCookie();
 			services.AddAuthorization();
 			services.AddScoped<ISecurityService, SecurityService>();
+			services.AddScoped<AppService>();
+			services.AddScoped<StageService>();
 			services.AddScoped<AuthUser>();
 
 			services.AddControllersWithViews();

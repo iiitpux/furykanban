@@ -17,9 +17,9 @@ namespace FuryKanban.Logic
 		private AppDbContext _appDbContext;
 		private ILogger<SecurityService> _logger;
 
-		public SecurityService(AppDbContext fkDbContext, ILogger<SecurityService> logger)
+		public SecurityService(AppDbContext appDbContext, ILogger<SecurityService> logger)
 		{
-			_appDbContext = fkDbContext;
+			_appDbContext = appDbContext;
 			_logger = logger;
 		}
 
@@ -66,7 +66,10 @@ namespace FuryKanban.Logic
 			await _appDbContext.AddAsync<UserDto>(newUser);
 			await _appDbContext.SaveChangesAsync();
 
-			return new RegistrationResponse();
+			return new RegistrationResponse()
+			{
+				Token = token.Code
+			};
 		}
 
 		//public async Task<LoginResponse> LoginAsync(LoginRequest login)

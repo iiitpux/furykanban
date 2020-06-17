@@ -1,6 +1,7 @@
 @page "/fetchdata"
 @using FuryKanban.Shared
-@inject HttpClient Http
+@using FuryKanban.Client.Core
+@inject AppHttpClient Http
 @inject IJSRuntime JsRuntime;
 
 <h1>Weather forecast</h1>
@@ -41,7 +42,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		await JsRuntime.InvokeAsync<string>("addCookie", "user=John; max-age=3600");
+		//await JsRuntime.InvokeAsync<string>("addCookie", "user=John; max-age=3600");
 		var forecasts = await Http.GetFromJsonAsync<bool>("WeatherForecast");
 		//var res = await Http.GetFromJsonAsync<FuryKanban.Shared.Model.Security.RegistrationModel>("api/security");
 		//Console.WriteLine(res);

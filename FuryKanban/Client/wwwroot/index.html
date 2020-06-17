@@ -2,18 +2,20 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>FuryKanban</title>
-    <base href="/" />
-    <link href="css/coreui/css/coreui.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
-    <style>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>FuryKanban</title>
+	<base href="/" />
+	<link href="css/coreui/css/coreui.css" rel="stylesheet" />
+	<link href="css/app.css?v=4" rel="stylesheet" />
+
+	<link href="icons/css/font-awesome.css" rel="stylesheet" />
+	<style>
 		/*//todo- move stop app.css*/
-		.middle-box{
-			margin:auto;
-			margin-top:150px;
-			width:700px;
+		.middle-box {
+			margin: auto;
+			margin-top: 150px;
+			width: 700px;
 		}
 
 		.testimonial-group > .row {
@@ -24,18 +26,18 @@
 
 			.testimonial-group > .row > .col-xs-4 {
 				flex: 0 0 auto;
-                width:300px;
+				/*width:300px;*/
 			}
 
 		/* Decorations */
 		.col-xs-4 {
-			color: #fff;
-			font-size: 48px;
+			/*color: #fff;*/
+			/*font-size: 48px;*/
 			padding-bottom: 20px;
 			padding-top: 18px;
 		}
 
-			.col-xs-4:nth-child(3n+1) {
+		/*.col-xs-4:nth-child(3n+1) {
 				background: #c69;
 			}
 
@@ -45,8 +47,8 @@
 
 			.col-xs-4:nth-child(3n+3) {
 				background: #69c;
-			}
-    </style>
+			}*/
+	</style>
 </head>
 <body class="c-app c-dark-theme">
 	<app class="c-wrapper">Loading...</app>
@@ -57,13 +59,10 @@
 		<a href="" class="reload">Reload</a>
 		<a class="dismiss">🗙</a>
 	</div>-->
-	<!--//todo- delete is all ok-->
-	<!--<script src="http://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
-	<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"  crossorigin="anonymous"></script>-->
 	<script src="css/coreui/js/coreui.js"></script>
 	<script src="css/app.js?v=3"></script>
+	<script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
 	<script src="_framework/blazor.webassembly.js"></script>
-
 </body>
 </html>

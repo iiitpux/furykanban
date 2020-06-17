@@ -12,7 +12,7 @@ namespace FuryKanban.Server.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]
-	[CookieTokenAuthorization]
+	[TokenAuthorization]
 	public class WeatherForecastController : ControllerBase
 	{
 		private static readonly string[] Summaries = new[]

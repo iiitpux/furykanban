@@ -1,0 +1,62 @@
+﻿@using BlazorAnimate
+@inject FuryKanban.Client.Core.StageService StateService
+
+<div class="col-4 col-lg-4 col-md-4 col-xs-4">
+	<Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.5)">
+		@if (_state == "button")
+		{
+			<button href="#" class="btn btn-success" @onclick="@(() => ChangeState("edit"))">Add column</button>
+		}
+		else if (_state == "edit")
+		{
+			<Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.5)">
+				<div class="card card-accent-info">
+					<EditForm model="@_stage" OnValidSubmit="HandleValidSubmit">
+						<DataAnnotationsValidator />
+						<div class="card-header">
+							<input @bind="_stage.Title" class="form-control" id="name" type="text" placeholder="Enter your name">
+							<ValidationMessage For="@(() => _stage.Title)" />
+						</div>
+						<div class="card-footer">
+							<div class="row align-items-center">
+								<div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+									<button class="btn btn-block btn-success" type="submit">
+										<i class="spinner-border spinner-border-sm"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+					</EditForm>
+
+
+				</div>
+			</Animate>
+		}
+	</Animate>
+</div>
+@code {
+	private string _state = "edit";
+	private FuryKanban.Shared.Model.AppState.Stage _stage = new FuryKanban.Shared.Model.AppState.Stage();
+	private bool _isLoading = false;
+
+	private void ChangeState(string state)
+	{
+		_state = state;
+	}
+
+	private async Task HandleValidSubmit()
+	{
+		_isLoading = true;
+
+		var response = await StateService.EditStageAsync(_stage);
+		if (response.HasError)
+		{
+			//_errorMessage = response.ErrorMessage;
+			//_showAlert = true;
+		} else
+		{
+			//todo- update appstate
+		}
+		_isLoading = false;
+	}
+}

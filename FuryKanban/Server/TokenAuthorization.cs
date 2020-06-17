@@ -1,4 +1,5 @@
 ﻿using FuryKanban.Logic;
+using FuryKanban.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -12,28 +13,28 @@ using System.Threading.Tasks;
 namespace FuryKanban.Server
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class CookieTokenAuthorization : Attribute, IAuthorizationFilter
+	public class TokenAuthorization : Attribute, IAuthorizationFilter
 	{
 		public void OnAuthorization(AuthorizationFilterContext filterContext)
 		{
 			if (filterContext != null)
 			{
-				var token = filterContext.HttpContext.Request.Cookies["token"];
-				
-				if (token != null)
+				if (filterContext.HttpContext.Request.Headers.ContainsKey(Const.Token))
 				{
+					var token = filterContext.HttpContext.Request.Headers[Const.Token].ToString();
+
 					var securityService = (ISecurityService)filterContext.HttpContext.RequestServices.GetService(typeof(ISecurityService));
-					var userId = securityService.GetUserIdByTokenAsync(token).Result;
-					
+					var userId = securityService.GetUserIdByTokenAsync(token).GetAwaiter().GetResult();
+
 					if (userId.HasValue)
 					{
 						var authUser = (AuthUser)filterContext.HttpContext.RequestServices.GetService(typeof(AuthUser));
 						authUser.Id = userId.Value;
-						
+
 						return;
 					}
 				}
-				
+
 				filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 				filterContext.HttpContext.Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "Not Authorized";
 				filterContext.Result = new JsonResult("NotAuthorized")

@@ -1,7 +1,10 @@
 ﻿@layout LoginLayout
 @using FuryKanban.Shared
-@page "/"
-@inject HttpClient Http
+@page "/login"
+@using FuryKanban.Client.Core
+@using FuryKanban.Client.Shared
+@using Microsoft.AspNetCore.Components.Web
+@inject AppHttpClient Http
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-md-8">
@@ -65,6 +68,6 @@
 
 	private async Task TryLogin(MouseEventArgs e)
 	{
-		var res = await Http.PostAsJsonAsync("api/security/login", _login);
+		//var res = await Http.PostAsJsonAsync("api/security/login", _login);
 	}
 }

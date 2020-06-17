@@ -1,10 +1,11 @@
 ﻿@layout LoginLayout
 @page "/registration"
 @using FuryKanban.Shared.Model.Security
-@inject HttpClient Http
+@using FuryKanban.Client.Core
+@using FuryKanban.Client.Core.Security
+@using FuryKanban.Client.Shared
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JsRuntime;
-@inject ApiAuthenticationStateProvider asp;
+@inject SecurityService SecurityService;
 
 <div class="container">
 	<div class="row justify-content-center">
@@ -79,27 +80,14 @@
 	private async Task HandleValidSubmit()
 	{
 		_isLoading = true;
-		var response = await Http.PostAsJsonAsync("api/security/registration", _registrationRequest);
-		if (response.IsSuccessStatusCode)
+		var response = await SecurityService.RegistrationAsync(_registrationRequest);
+		if (!response.HasError)
 		{
-			var content = await response.Content.ReadFromJsonAsync<RegistrationResponse>();
-			if (!content.HasError)
-			{
-				//todo- max-age to settings
-				await JsRuntime.InvokeAsync<string>("addCookie", "token=" + content.Token + "; max-age=3600");
-				var tok = await JsRuntime.InvokeAsync<string>("getCookie", "token");
-				asp.MarkUserAsAuthenticated();
-				NavigationManager.NavigateTo("app");
-			}
-			else
-			{
-				_errorMessage = content.ErrorMessage;
-				_showAlert = true;
-			}
+			NavigationManager.NavigateTo("");
 		}
 		else
 		{
-			_errorMessage = response.StatusCode.ToString();
+			_errorMessage = response.ErrorMessage;
 			_showAlert = true;
 		}
 		_isLoading = false;

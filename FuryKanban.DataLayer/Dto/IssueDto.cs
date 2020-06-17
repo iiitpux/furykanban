@@ -11,8 +11,8 @@ namespace FuryKanban.DataLayer.Dto
         public int Id { set; get; }
         
         public string Title { set; get; }
-        
-        public string Description { set; get; }
+
+        public string Body { set; get; }
         
         public DateTime AssignedDateTime { set; get; }
         

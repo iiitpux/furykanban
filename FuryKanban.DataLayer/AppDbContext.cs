@@ -54,7 +54,7 @@ namespace FuryKanban.DataLayer
 				CreatedDateTime = DateTime.Now,
 				CreatedUserId = userId,
 				Title = "Добавить свой проект",
-				Description = "Описание того как добавить",
+				Body = "Описание того как добавить",
 				Order = 1
 			};
 			firstStage.Issues.Add(firstIssue);
@@ -71,7 +71,7 @@ namespace FuryKanban.DataLayer
 				CreatedDateTime = DateTime.Now,
 				CreatedUserId = userId,
 				Title = "Добавить задачу",
-				Description = "Описание того как добавить",
+				Body = "Описание того как добавить",
 				Order = 2
 			};
 			secondStage.Issues.Add(secondIssue);
@@ -88,7 +88,7 @@ namespace FuryKanban.DataLayer
 				CreatedDateTime = DateTime.Now,
 				CreatedUserId = userId,
 				Title = "Зарегистрироваться в системе",
-				Description = "Вай молодец",
+				Body = "Вай молодец",
 				Order = 3
 			};
 			thirdStage.Issues.Add(thisrdIssue);
