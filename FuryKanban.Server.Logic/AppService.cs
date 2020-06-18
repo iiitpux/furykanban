@@ -1,4 +1,5 @@
-﻿using FuryKanban.DataLayer;
+﻿using AutoMapper;
+using FuryKanban.DataLayer;
 using FuryKanban.DataLayer.Dto;
 using FuryKanban.Shared.Model;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,14 @@ namespace FuryKanban.Server.Logic
 		//todo- history
 		public async Task<AppState> GetStateAsync(int userId)
 		{
-			var res = await _appDbContext.Stages.Where(p => p.UserId == userId).Include(p=>p.Issues).ToListAsync();
-			return new AppState();
+			var stagesDto = await _appDbContext.Stages.Where(p => p.UserId == userId).Include(p=>p.Issues).ToListAsync();
+			var config = new MapperConfiguration(cfg => cfg.CreateMap<StageDto, AppState.Stage>());
+			var mapper = new Mapper(config);
+			var stages = mapper.Map<List<AppState.Stage>>(stagesDto);
+			return new AppState()
+			{
+				Stages = stages
+			};
 		}
 	}
 }

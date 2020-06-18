@@ -28,5 +28,11 @@ namespace FuryKanban.Client.Core
             OnStateChange?.Invoke(null, new EventArgs());
         }
         //todo- unsubsribe        
+
+        public void DeleteStage(int stageId)
+		{
+            //todo-
+            throw new Exception();
+		}
     }
 }

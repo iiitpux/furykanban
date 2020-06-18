@@ -31,7 +31,7 @@ namespace FuryKanban.Server.Logic
 		//	}).ToListAsync();
 		//}
 
-		public async Task<StageEditResponse> InsertOrUpdateAsync(AppState.Stage stage, int userId)
+		public async Task<StageChangeResponse> InsertOrUpdateAsync(AppState.Stage stage, int userId)
 		{
 			async Task AddNewStage()
 			{
@@ -60,15 +60,41 @@ namespace FuryKanban.Server.Logic
 			else
 				await AddNewStage();
 
+			return new StageChangeResponse()
+			{
+				Stages = GetStages(userId)
+			};
+		}
+
+		public async Task<StageChangeResponse> DeleteAsync(int id, int userId)
+		{
+			var stage = await _appDbContext.Stages.FindAsync(id);
+
+			if (stage == null)
+			{
+				return new StageChangeResponse() { 
+					HasError = true,
+					ErrorMessage = "Stage not found",
+					Stages = GetStages(userId)
+				};
+			}
+
+			_appDbContext.Stages.Remove(stage);
+			await _appDbContext.SaveChangesAsync();
+
+			return new StageChangeResponse()
+			{
+				Stages = GetStages(userId)
+			};
+		}
+
+		private List<AppState.Stage> GetStages(int userId)
+		{
 			var config = new MapperConfiguration(cfg => cfg.CreateMap<StageDto, AppState.Stage>());
 			var mapper = new Mapper(config);
 			var stagesDto = _appDbContext.Stages.AsNoTracking().Where(p => p.UserId == userId).ToList();
 			var stages = mapper.Map<List<AppState.Stage>>(stagesDto);
-
-			return new StageEditResponse()
-			{
-				Stages = stages
-			};
+			return stages;
 		}
 	}
 }

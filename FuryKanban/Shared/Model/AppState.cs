@@ -10,6 +10,7 @@ namespace FuryKanban.Shared.Model
 	{
 		//todo linkedlist
 		public List<Stage> Stages { set; get; }
+		public List<Issue> Issues { set; get; }
 
 		public class Stage
 		{

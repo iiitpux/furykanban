@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using FuryKanban.Client.Core.Security
+@using FuryKanban.Client.Core
+@using System.Net.Http.Headers
+@using BlazorAnimate
+
+@inject AppHttpClient Http
+@inject StageService StageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<Animate Animation="Animations.FadeRight" Duration="TimeSpan.FromSeconds(1)" >
+	<div class="card card-accent-info">
+		<div class="card-header">
+			@Stage.Title
+			<div class="card-header-actions">
+				<button class="btn card-header-action btn-setting" type="button">
+					<i class="fa fa-plus"></i>
+				</button>
+				@*<div class="dropdown d-inline-block">
+				<button type="button" class="btn dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-ellipsis-v"></i></button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="margin: 0px; position: absolute; left: 0px; top: 0px; right: auto; bottom: auto; transform: translate(0px, 34.4px);" data-popper-placement="bottom-start"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+			</div>*@
+				<DropdownComponent>
+					<Wrapper>
+						<a class="dropdown-item" href="#"><i class="fa fa-pencil"></i> Edit</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#"><i class="fa fa-close"></i> Delete</a>
+					</Wrapper>
+				</DropdownComponent>
+			</div>
+		</div>
+		<div class="card-body bg-secondary">
+			@if (Wrapper != null)
+			{
+				@Wrapper
+			}
+		</div>
+	</div>
+</Animate>
+
+@code {
+	[Parameter]
+	public FuryKanban.Shared.Model.AppState.Stage Stage { set; get; }
+
+	[Parameter] 
+	public RenderFragment Wrapper { get; set; }
+}

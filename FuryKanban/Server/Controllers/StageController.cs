@@ -24,30 +24,20 @@ namespace FuryKanban.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<StageEditResponse> Post(AppState.Stage stage)
+        public async Task<StageChangeResponse> Post(AppState.Stage stage)
         {
             return await _stageService.InsertOrUpdateAsync(stage, _authUser.Id);
         }
 
-        //// DELETE: api/Products/5
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Products>> DeleteProducts(int id)
-        //{
-        //    var products = await _context.Products.FindAsync(id);
-        //    if (products == null)
-        //    {
-        //        return NotFound();
-        //    }
+		[HttpDelete("{id}")]
+		public async Task<StageChangeResponse> Delete(int id)
+		{
+			return await _stageService.DeleteAsync(id, _authUser.Id);
+		}
 
-        //    _context.Products.Remove(products);
-        //    await _context.SaveChangesAsync();
-
-        //    return products;
-        //}
-
-        //private bool ProductsExists(int id)
-        //{
-        //    return _context.Products.Any(e => e.ProductId == id);
-        //}
-    }
+		//private bool ProductsExists(int id)
+		//{
+		//    return _context.Products.Any(e => e.ProductId == id);
+		//}
+	}
 }

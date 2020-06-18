@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Logic", "FuryKan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Common", "FuryKanban.Common\FuryKanban.Common.csproj", "{F23F8592-7BA6-4B9B-BDAA-90ABA979E3B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuryKanban.Server.Logic", "FuryKanban.Server.Logic\FuryKanban.Server.Logic.csproj", "{8D4CDEA3-D05A-43C4-B7AF-A3B757FDE3E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuryKanban.Server.Logic", "FuryKanban.Server.Logic\FuryKanban.Server.Logic.csproj", "{8D4CDEA3-D05A-43C4-B7AF-A3B757FDE3E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

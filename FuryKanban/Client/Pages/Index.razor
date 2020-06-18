@@ -4,6 +4,7 @@
 @using FuryKanban.Client.Core
 @using System.Net.Http.Headers
 @using BlazorAnimate
+@using FuryKanban.Client.Shared.Components
 
 @inject AppHttpClient Http
 @inject AppStateService AppStateService
@@ -19,23 +20,13 @@
 				@foreach (var item in AppStateService.Stages)
 				{
 					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
-						<Animate Animation="Animations.FadeUp" Duration="TimeSpan.FromSeconds(1)">
-							<div class="card card-accent-info">
-								<div class="card-header">
-									Header
-									<div class="card-header-actions">
-										<a class="card-header-action btn-setting" href="#">
-											<i class="fa fa-plus"></i>
-										</a>
-									</div>
-								</div>
-								<div class="card-body bg-secondary">
-									<CardEdit></CardEdit>
-									<Card></Card>
-									<Card></Card>
-								</div>
-							</div>
-						</Animate>
+						<StageComponent Stage="item">
+							<Wrapper>
+								<CardEdit></CardEdit>
+								<Card></Card>
+								<Card></Card>
+							</Wrapper>
+						</StageComponent>
 					</div>
 				}
 
@@ -140,7 +131,9 @@
 
 		if (user.Identity.IsAuthenticated)
 		{
-			//var t = await Http.GetFromJsonAsyncWithToken<FuryKanban.Shared.Model.AppState>("api/app");
+			var appState = await Http.GetFromJsonAsyncWithToken<FuryKanban.Shared.Model.AppState>("api/app");
+			AppStateService.Stages = appState.Stages;
+			base.StateHasChanged();
 		}
 	}
 

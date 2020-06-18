@@ -18,24 +18,46 @@ namespace FuryKanban.Client.Core
 		}
 
 		//todo- общая часть для всех
-		public async Task<StageEditResponse> EditStageAsync(AppState.Stage stage)
+		public async Task<StageChangeResponse> EditStageAsync(AppState.Stage stage)
 		{
 			var response = await _httpClient.PostAsJsonAsync("api/stage", stage);
 
 			if (!response.IsSuccessStatusCode)
-				return new StageEditResponse()
+				return new StageChangeResponse()
 				{
 					ErrorMessage = response.StatusCode.ToString(),
 					HasError = true
 				};
 			
-			var result = await response.Content.ReadFromJsonAsync<StageEditResponse>();
+			var result = await response.Content.ReadFromJsonAsync<StageChangeResponse>();
 
 			if (result.HasError)
 				return result;
 
 			OnStagesChange?.Invoke(this, result.Stages);
 			
+			return result;
+
+		}
+
+		public async Task<StageChangeResponse> DeleteStageAsync(int id)
+		{
+			var response = await _httpClient.DeleteAsync($"api/stage/{id}");
+
+			if (!response.IsSuccessStatusCode)
+				return new StageChangeResponse()
+				{
+					ErrorMessage = response.StatusCode.ToString(),
+					HasError = true
+				};
+
+			var result = await response.Content.ReadFromJsonAsync<StageChangeResponse>();
+
+			if (result.HasError)
+				return result;
+
+			OnStagesChange?.Invoke(this, result.Stages);
+
 			return result;
 
 		}
