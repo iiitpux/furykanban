@@ -1,6 +1,8 @@
-﻿namespace FuryKanban.Shared.Model.Security
+﻿using FuryKanban.Shared.Interfaces;
+
+namespace FuryKanban.Shared.Model.Security
 {
-    public class RegistrationResponse
+    public class RegistrationResponse : IErrorResult
     {
         //todo- to the base class with LoginResponce
         public string Token { set; get; }

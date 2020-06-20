@@ -4,35 +4,47 @@ using FuryKanban.Shared.Model;
 
 namespace FuryKanban.Client.Core
 {
-    public class AppStateService
-    {
-        private StageService _stageService;
-        private IssueService _issueService;
+	public class AppStateService : IDisposable
+	{
+		private StageService _stageService;
+		private IssueService _issueService;
 
-        public List<AppState.Stage> Stages = new List<AppState.Stage>();
-
-        public event EventHandler OnStateChange;
-
-        public AppStateService(StageService stageService, IssueService issueService)
-        {
-            _stageService = stageService;
-            _issueService = issueService;
-            
-            _stageService.OnStagesChange += StageServiceOnStagesChange;
-        }
-
-        private void StageServiceOnStagesChange(object sender, List<AppState.Stage> e)
-        {
-            //todo- update stages
-            Stages = e;
-            OnStateChange?.Invoke(null, new EventArgs());
-        }
-        //todo- unsubsribe        
-
-        public void DeleteStage(int stageId)
+		public AppState State = new AppState()
 		{
-            //todo-
-            throw new Exception();
+			Issues = new List<AppState.Issue>(),
+			Stages = new List<AppState.Stage>()
+		};
+
+		public event EventHandler OnStateChanged;
+
+		public AppStateService(StageService stageService, IssueService issueService)
+		{
+			_stageService = stageService;
+			_issueService = issueService;
+
+			_stageService.OnStateChanged += StateChanged;
+			_issueService.OnStateChanged += StateChanged;
 		}
-    }
+
+		public void SetState(AppState state)
+		{
+			if (state == null)
+				return;
+
+			State = state;
+
+			OnStateChanged?.Invoke(null, new EventArgs());
+		}
+
+		private void StateChanged(object sender, AppState appState)
+		{
+			SetState(appState);
+		}
+
+		public void Dispose()
+		{
+			_stageService.OnStateChanged -= StateChanged;
+			_issueService.OnStateChanged -= StateChanged;
+		}
+	}
 }

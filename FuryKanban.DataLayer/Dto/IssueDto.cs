@@ -14,22 +14,20 @@ namespace FuryKanban.DataLayer.Dto
 
         public string Body { set; get; }
         
-        public DateTime AssignedDateTime { set; get; }
-        
         public DateTime CreatedDateTime { set; get; }
 
-        public int AssignedUserId { set; get; }
+        public int UserId { set; get; }
 
-        public UserDto AssignedUser { set; get; }
-
-        public int CreatedUserId { set; get; }
-
-        public UserDto CreatedUser { set; get; }
+        public UserDto User { set; get; }
         
         public int StageId { set; get; }
 
         public StageDto Stage { set; get; }
 
-        public int Order { set; get; }
+        //public int PrevIssueId { set; get; }
+        //public IssueDto PrevIssue { set; get; }
+
+        //public int NextIssueId { set; get; }
+        //public IssueDto NextIssue { set; get; }
     }
 }

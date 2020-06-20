@@ -1,6 +1,8 @@
-﻿namespace FuryKanban.Shared.Model.Security
+﻿using FuryKanban.Shared.Interfaces;
+
+namespace FuryKanban.Shared.Model.Security
 {
-    public class LoginResponse
+    public class LoginResponse : IErrorResult
     {
         public string Token { set; get; }
         public bool HasError { set; get; } = false;

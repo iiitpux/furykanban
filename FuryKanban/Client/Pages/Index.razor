@@ -5,140 +5,70 @@
 @using System.Net.Http.Headers
 @using BlazorAnimate
 @using FuryKanban.Client.Shared.Components
+@using FuryKanban.Shared.Interfaces
 
 @inject AppHttpClient Http
 @inject AppStateService AppStateService
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
-<AuthorizeView>
-	<NotAuthorized>
-		<RedirectToLogin />
-	</NotAuthorized>
-	<Authorized>
-		<div class="row testimonial-group">
-			<div class="row">
-				@foreach (var item in AppStateService.Stages)
+@foreach (var error in ErrorList)
+{
+	<div class="row">
+		<div class="alert alert-warning alert-dismissible fade show" role="alert">
+			<strong>@error.ErrorMessage</strong>.
+			<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+		</div>
+	</div>
+}
+	<AuthorizeView>
+		<NotAuthorized>
+			<RedirectToLogin />
+		</NotAuthorized>
+		<Authorized>
+			<div class="row testimonial-group">
+				@foreach (var item in AppStateService.State.Stages)
 				{
 					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
 						<StageComponent Stage="item">
 							<Wrapper>
-								<CardEdit></CardEdit>
-								<Card></Card>
-								<Card></Card>
+								@foreach (var item in item.Issues)
+								{
+									<IssueComponent Issue="item"></IssueComponent>
+								}
 							</Wrapper>
 						</StageComponent>
 					</div>
 				}
-
 				<ColumnEdit></ColumnEdit>
-				@*<div class="col-4 col-lg-4 col-md-4 col-xs-4">
-						<div class="card card-accent-warning">
-							<div class="card-header">
-								Card with accent
-								<div class="card-header-actions">
-									<a class="card-header-action btn-setting" href="#">
-										<i class="fa fa-plus"></i>
-									</a>
-								</div>
-							</div>
-							<div class="card-body bg-secondary">
-								<Card></Card>
-								<Card></Card>
-								<Card></Card>
-							</div>
-						</div>
-					</div>
-					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
-						<div class="card card-accent-success">
-							<div class="card-header">
-								Card with accent
-								<div class="card-header-actions">
-									<a class="card-header-action btn-setting" href="#">
-										<i class="fa fa-plus"></i>
-									</a>
-								</div>
-							</div>
-							<div class="card-body bg-secondary">
-								<Card></Card>
-								<Card></Card>
-								<Card></Card>
-							</div>
-						</div>
-					</div>
-					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
-						<div class="card card-accent-light">
-							<div class="card-header">
-								Card with accent
-								<div class="card-header-actions">
-									<a class="card-header-action btn-setting" href="#">
-										<i class="fa fa-plus"></i>
-									</a>
-								</div>
-							</div>
-							<div class="card-body bg-secondary">
-								<Card></Card>
-								<Card></Card>
-								<Card></Card>
-							</div>
-						</div>
-					</div>
-					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
-						<div class="card card-accent-primary">
-							<div class="card-header">
-								Card with accent
-								<div class="card-header-actions">
-									<a class="card-header-action btn-setting" href="#">
-										<i class="fa fa-plus"></i>
-									</a>
-								</div>
-							</div>
-							<div class="card-body bg-secondary">
-								<Card></Card>
-								<Card></Card>
-								<Card></Card>
-							</div>
-						</div>
-					</div>
-					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
-						<div class="card card-accent-dark">
-							<div class="card-header">
-								Card with accent
-								<div class="card-header-actions">
-									<a class="card-header-action btn-setting" href="#">
-										<i class="fa fa-plus"></i>
-									</a>
-								</div>
-							</div>
-							<div class="card-body bg-secondary">
-								<Card></Card>
-								<Card></Card>
-								<Card></Card>
-							</div>
-						</div>
-					</div>*@
 			</div>
-		</div>
-	</Authorized>
-</AuthorizeView>
+		</Authorized>
+	</AuthorizeView>
 
-@code {
-	protected override async Task OnInitializedAsync()
-	{
-		AppStateService.OnStateChange += StageServiceOnStagesChange;
+	@code {
+		private List<IErrorResult> ErrorList = new List<IErrorResult>();
 
-		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-		var user = authState.User;
-
-		if (user.Identity.IsAuthenticated)
+		protected override async Task OnInitializedAsync()
 		{
-			var appState = await Http.GetFromJsonAsyncWithToken<FuryKanban.Shared.Model.AppState>("api/app");
-			AppStateService.Stages = appState.Stages;
+			AppStateService.OnStateChanged += OnStateChanged;
+
+			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+			var user = authState.User;
+
+			if (user.Identity.IsAuthenticated)
+			{
+				var appState = await Http.GetAsyncEx<FuryKanban.Shared.Model.AppStateResponse>("api/app");
+				AppStateService.SetState(appState.AppState);
+			}
+
+			Http.OnApiError += OnApiError;
+		}
+
+		private void OnStateChanged(object sender, EventArgs e)
+		{
 			base.StateHasChanged();
 		}
-	}
 
-	private void StageServiceOnStagesChange(object sender, EventArgs e)
-	{
-		base.StateHasChanged();
+		private void OnApiError(object sender, IErrorResult error)
+		{
+			//todo- show error
+		}
 	}
-}

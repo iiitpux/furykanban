@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FuryKanban.Shared.Model
 {
-	public class StageChangeResponse : IAppStateResult, IErrorResult
+	public class IssueChangeResponse : IAppStateResult, IErrorResult
 	{
 		public bool HasError { set; get; } = false;
 		public string ErrorMessage { set; get; }

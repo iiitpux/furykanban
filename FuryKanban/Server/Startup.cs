@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using FuryKanban.Server.Logic;
+using FuryKanban.Server.Filters;
 
 namespace FuryKanban.Server
 {
@@ -40,9 +41,11 @@ namespace FuryKanban.Server
 			//	.AddCookie();
 			services.AddAuthorization();
 			services.AddScoped<ISecurityService, SecurityService>();
-			services.AddScoped<AppService>();
+			services.AddScoped<AppStateService>();
 			services.AddScoped<StageService>();
+			services.AddScoped<IssueService>();
 			services.AddScoped<AuthUser>();
+			services.AddScoped<AppStateFilter>();
 
 			services.AddControllersWithViews();
 			services.AddRazorPages();
@@ -60,7 +63,7 @@ namespace FuryKanban.Server
 			{
 				app.UseExceptionHandler("/Error");
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-				app.UseHsts();
+				//app.UseHsts();
 			}
 
 			//

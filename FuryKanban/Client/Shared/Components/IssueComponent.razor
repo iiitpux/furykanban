@@ -1,0 +1,36 @@
+﻿@inject FuryKanban.Client.Core.IssueService IssueService
+@if (!IsEdit)
+{
+	<div class="card">
+		<div class="card-header">
+			@Issue.Title
+			<div class="card-header-actions">
+				<button @onclick="() => IsEdit = !IsEdit" class="btn card-header-action">
+					<i class="fa fa-pencil"></i>
+				</button>
+				<button class="btn card-header-action">
+					<i @onclick="async () => await IssueService.DeleteIssueAsync(Issue)" class="fa fa-close"></i>
+				</button>
+			</div>
+		</div>
+		<div class="card-body">
+			@Issue.Body
+		</div>
+	</div>
+}
+else
+{
+	<IssueEditComponent Issue="Issue" AfterSave="()=> IsEdit = false" AfterCancel="()=> IsEdit = false"></IssueEditComponent>
+}
+@code {
+	[Parameter]
+	public FuryKanban.Shared.Model.AppState.Issue Issue { set; get; }
+
+	[Parameter]
+	public bool IsEdit { set; get; } = false;
+
+	[Parameter]
+	public bool IsVisible { set; get; } = true;
+
+
+}

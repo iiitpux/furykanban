@@ -6,15 +6,17 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using FuryKanban.Common;
+using Microsoft.Extensions.Logging;
 
 namespace FuryKanban.DataLayer
 {
 	public class AppDbContext : DbContext
 	{
-		public DbSet<IssueDto> Issues { get; set; }
-		public DbSet<StageDto> Stages { get; set; }
-		public DbSet<TokenDto> Tokens { get; set; }
-		public DbSet<UserDto> Users { get; set; }
+		public DbSet<IssueDto> Issues { set; get; }
+		public DbSet<StageDto> Stages { set; get; }
+		public DbSet<TokenDto> Tokens { set; get; }
+		public DbSet<UserDto> Users { set; get; }
+		public DbSet<HistoryDto> History { set; get; }
 
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,8 +30,18 @@ namespace FuryKanban.DataLayer
 			{
 				//options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
 			});
+
+			optionsBuilder.UseLoggerFactory(MyLoggerFactory);
+
+
 			base.OnConfiguring(optionsBuilder);
 		}
+
+		public static readonly ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder =>
+		{
+			builder.AddConsole();
+		});
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			//modelBuilder.Entity<Author>()
@@ -39,80 +51,84 @@ namespace FuryKanban.DataLayer
 			base.OnModelCreating(modelBuilder);
 		}
 
-		public void CreateDefaultProject(int userId)
-		{
-			var firstStage = new StageDto()
-			{
-				Order = 1,
-				Title = "Новое"
-			};
-			firstStage.Issues = new List<IssueDto>();
-			var firstIssue = new IssueDto()
-			{
-				AssignedDateTime = DateTime.Now,
-				AssignedUserId = userId,
-				CreatedDateTime = DateTime.Now,
-				CreatedUserId = userId,
-				Title = "Добавить свой проект",
-				Body = "Описание того как добавить",
-				Order = 1
-			};
-			firstStage.Issues.Add(firstIssue);
-			var secondStage = new StageDto()
-			{
-				Order = 2,
-				Title = "В работе"
-			};
-			secondStage.Issues = new List<IssueDto>();
-			var secondIssue = new IssueDto()
-			{
-				AssignedDateTime = DateTime.Now,
-				AssignedUserId = userId,
-				CreatedDateTime = DateTime.Now,
-				CreatedUserId = userId,
-				Title = "Добавить задачу",
-				Body = "Описание того как добавить",
-				Order = 2
-			};
-			secondStage.Issues.Add(secondIssue);
-			var thirdStage = new StageDto()
-			{
-				Order = 3,
-				Title = "Готово"
-			};
-			thirdStage.Issues = new List<IssueDto>();
-			var thisrdIssue = new IssueDto()
-			{
-				AssignedDateTime = DateTime.Now,
-				AssignedUserId = userId,
-				CreatedDateTime = DateTime.Now,
-				CreatedUserId = userId,
-				Title = "Зарегистрироваться в системе",
-				Body = "Вай молодец",
-				Order = 3
-			};
-			thirdStage.Issues.Add(thisrdIssue);
-			this.SaveChanges();
-		}
+		//todo use or remove
+		//public void CreateDefaultProject(int userId)
+		//{
+		//	var firstStage = new StageDto()
+		//	{
+		//		Order = 1,
+		//		Title = "Новое"
+		//	};
+		//	firstStage.Issues = new List<IssueDto>();
+		//	var firstIssue = new IssueDto()
+		//	{
+		//		AssignedDateTime = DateTime.Now,
+		//		AssignedUserId = userId,
+		//		CreatedDateTime = DateTime.Now,
+		//		CreatedUserId = userId,
+		//		Title = "Добавить свой проект",
+		//		Body = "Описание того как добавить",
+		//		Order = 1
+		//	};
+		//	firstStage.Issues.Add(firstIssue);
+		//	var secondStage = new StageDto()
+		//	{
+		//		Order = 2,
+		//		Title = "В работе"
+		//	};
+		//	secondStage.Issues = new List<IssueDto>();
+		//	var secondIssue = new IssueDto()
+		//	{
+		//		AssignedDateTime = DateTime.Now,
+		//		AssignedUserId = userId,
+		//		CreatedDateTime = DateTime.Now,
+		//		CreatedUserId = userId,
+		//		Title = "Добавить задачу",
+		//		Body = "Описание того как добавить",
+		//		Order = 2
+		//	};
+		//	secondStage.Issues.Add(secondIssue);
+		//	var thirdStage = new StageDto()
+		//	{
+		//		Order = 3,
+		//		Title = "Готово"
+		//	};
+		//	thirdStage.Issues = new List<IssueDto>();
+		//	var thisrdIssue = new IssueDto()
+		//	{
+		//		AssignedDateTime = DateTime.Now,
+		//		AssignedUserId = userId,
+		//		CreatedDateTime = DateTime.Now,
+		//		CreatedUserId = userId,
+		//		Title = "Зарегистрироваться в системе",
+		//		Body = "Вай молодец",
+		//		Order = 3
+		//	};
+		//	thirdStage.Issues.Add(thisrdIssue);
+		//	this.SaveChanges();
+		//}
 
-		//todo перенести в logic
-		public UserDto AddAccountOwnerUser(string login, string password)
-		{
-			// добавим пользователя
-			string salt = Guid.NewGuid().ToString();
-			string passHash = Hashing.GetPasswordHash(password, salt);
-			var user = new UserDto()
-			{
-				Login = login.ToLower(),
-				Password = passHash,
-				CreateDate = DateTime.Now,
-				Salt = salt
-			};
-			this.Add(user);
-			this.SaveChanges();
-			CreateDefaultProject(user.Id);
-			return user;
-		}
+		////todo перенести в logic
+		//public UserDto AddAccountOwnerUser(string login, string password)
+		//{
+		//	// добавим пользователя
+		//	string salt = Guid.NewGuid().ToString();
+		//	string passHash = Hashing.GetPasswordHash(password, salt);
+		//	var user = new UserDto()
+		//	{
+		//		Login = login.ToLower(),
+		//		Password = passHash,
+		//		CreateDate = DateTime.Now,
+		//		Salt = salt
+		//	};
+		//	this.Add(user);
+		//	this.SaveChanges();
+		//	CreateDefaultProject(user.Id);
+		//	return user;
+		//}
+
+
+
 
 
 

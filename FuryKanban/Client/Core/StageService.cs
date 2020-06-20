@@ -9,7 +9,7 @@ namespace FuryKanban.Client.Core
 {
 	public class StageService
 	{
-		public event EventHandler<List<AppState.Stage>> OnStagesChange;
+		public event EventHandler<AppState> OnStateChanged;
 		
 		private readonly AppHttpClient _httpClient;
 		public StageService(AppHttpClient httpClient)
@@ -20,46 +20,20 @@ namespace FuryKanban.Client.Core
 		//todo- общая часть для всех
 		public async Task<StageChangeResponse> EditStageAsync(AppState.Stage stage)
 		{
-			var response = await _httpClient.PostAsJsonAsync("api/stage", stage);
+			var result = await _httpClient.PostAsyncEx<StageChangeResponse, AppState.Stage>("api/stage", stage, $"Edit column '{stage.Title}'");
 
-			if (!response.IsSuccessStatusCode)
-				return new StageChangeResponse()
-				{
-					ErrorMessage = response.StatusCode.ToString(),
-					HasError = true
-				};
-			
-			var result = await response.Content.ReadFromJsonAsync<StageChangeResponse>();
+			OnStateChanged?.Invoke(this, result.AppState);
 
-			if (result.HasError)
-				return result;
-
-			OnStagesChange?.Invoke(this, result.Stages);
-			
 			return result;
-
 		}
 
-		public async Task<StageChangeResponse> DeleteStageAsync(int id)
+		public async Task<StageChangeResponse> DeleteStageAsync(AppState.Stage stage)
 		{
-			var response = await _httpClient.DeleteAsync($"api/stage/{id}");
+			var result = await _httpClient.DeleteAsyncEx<StageChangeResponse>($"api/stage/{stage.Id}", $"Delete column '{stage.Title}'");
 
-			if (!response.IsSuccessStatusCode)
-				return new StageChangeResponse()
-				{
-					ErrorMessage = response.StatusCode.ToString(),
-					HasError = true
-				};
-
-			var result = await response.Content.ReadFromJsonAsync<StageChangeResponse>();
-
-			if (result.HasError)
-				return result;
-
-			OnStagesChange?.Invoke(this, result.Stages);
+			OnStateChanged?.Invoke(this, result.AppState);
 
 			return result;
-
 		}
 	}
 }

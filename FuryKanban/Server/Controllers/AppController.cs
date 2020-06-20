@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FuryKanban.Server.Filters;
 using FuryKanban.Server.Logic;
 using FuryKanban.Shared.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -15,9 +16,9 @@ namespace FuryKanban.Server.Controllers
 	[TokenAuthorization]
 	public class AppController : ControllerBase
 	{
-		private AppService _appService;
+		private AppStateService _appService;
 		private AuthUser _authUser;
-        public AppController(AppService appService, AuthUser authUser)
+        public AppController(AppStateService appService, AuthUser authUser)
 		{
 			_appService = appService;
 			_authUser = authUser;

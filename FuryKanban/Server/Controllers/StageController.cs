@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FuryKanban.Server.Filters;
 using FuryKanban.Server.Logic;
 using FuryKanban.Shared.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FuryKanban.Server.Controllers
 {
@@ -22,15 +24,17 @@ namespace FuryKanban.Server.Controllers
             _stageService = stageService;
             _authUser = authUser;
         }
-
+		
         [HttpPost]
+        [ServiceFilter(typeof(AppStateFilter))]
         public async Task<StageChangeResponse> Post(AppState.Stage stage)
         {
             return await _stageService.InsertOrUpdateAsync(stage, _authUser.Id);
         }
 
-		[HttpDelete("{id}")]
-		public async Task<StageChangeResponse> Delete(int id)
+        [HttpDelete("{id}")]
+        [ServiceFilter(typeof(AppStateFilter))]
+        public async Task<StageChangeResponse> Delete(int id)
 		{
 			return await _stageService.DeleteAsync(id, _authUser.Id);
 		}

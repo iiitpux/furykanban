@@ -5,9 +5,9 @@ using System.Text;
 
 namespace FuryKanban.Shared.Model
 {
-	public class StageChangeResponse : IAppStateResult, IErrorResult
+	public class AppStateResponse : IErrorResult, IAppStateResult
 	{
-		public bool HasError { set; get; } = false;
+		public bool HasError { set; get; }
 		public string ErrorMessage { set; get; }
 		public AppState AppState { set; get; }
 	}

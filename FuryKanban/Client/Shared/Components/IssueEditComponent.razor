@@ -1,0 +1,63 @@
+﻿@inject FuryKanban.Client.Core.IssueService IssueService
+<div class="card">
+	<EditForm model="@Issue" OnValidSubmit="HandleValidSubmit">
+		<DataAnnotationsValidator />
+		<div class="card-header">
+			<input @bind="Issue.Title" class="form-control" id="Title" type="text" placeholder="Enter title">
+			<ValidationMessage For="@(() => Issue.Title)" />
+		</div>
+		<div class="card-body">
+			<textarea @bind="Issue.Body" class="form-control" id="Body" name="textarea-input" rows="9" placeholder="Content.."></textarea>
+			<ValidationMessage For="@(() => Issue.Body)" />
+		</div>
+		<div class="card-footer">
+			<div class="row align-items-center">
+				<div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+					@if (!_isLoading)
+					{
+						<button class="btn btn-block btn-success" type="submit">Save</button>
+					}
+					else
+					{
+						<button class="btn btn-block btn-success" type="button" disabled="disabled">
+							<i class="spinner-border spinner-border-sm"></i>
+						</button>
+					}
+				</div>
+				<div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+					<button @onclick="() => AfterCancel.InvokeAsync(null)" class="btn btn-block btn-secondary" type="button">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</EditForm>
+</div>
+@code {
+	[Parameter]
+	public FuryKanban.Shared.Model.AppState.Issue Issue { set; get; }
+
+	[Parameter]
+	public EventCallback AfterSave { get; set; }
+
+	[Parameter]
+	public EventCallback AfterCancel { get; set; }
+
+	private bool _isLoading = false;
+
+
+	private async Task HandleValidSubmit()
+	{
+		_isLoading = true;
+
+		if(Issue.Id==0)
+		{
+			await IssueService.InsertIssueAsync(Issue);
+		}
+		else
+		{
+			await IssueService.UpdateIssueAsync(Issue);
+		}
+
+		await AfterSave.InvokeAsync(null);
+		_isLoading = false;
+	}
+}

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace FuryKanban.Server
+namespace FuryKanban.Server.Filters
 {
 	[AttributeUsage(AttributeTargets.Class)]
 	public class TokenAuthorization : Attribute, IAuthorizationFilter
