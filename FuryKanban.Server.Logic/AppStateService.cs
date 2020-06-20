@@ -15,7 +15,7 @@ namespace FuryKanban.Server.Logic
 	public class AppStateService
 	{
 		private AppDbContext _appDbContext;
-		private AppState _bufferState;
+		private HistoryDto _bufferHistory;
 		public AppStateService(AppDbContext appDbContext)
 		{
 			_appDbContext = appDbContext;
@@ -36,15 +36,24 @@ namespace FuryKanban.Server.Logic
 			};
 		}
 
-		//public async Task<int> SaveHistoryState(int userId, string title)
-		//{
-		//	var state = await GetStateAsync(userId);
-		//	var historyDto = new HistoryDto()
-		//	{
-		//		Body = JsonConvert.SerializeObject(state),
-		//		Title = title,
-		//		Committed = false
-		//	};
-		//}
+		public async void SetHistoryState(int userId, string title)
+		{
+			var state = await GetStateAsync(userId);
+			_bufferHistory = new HistoryDto()
+			{
+				Body = JsonConvert.SerializeObject(state),
+				Title = title,
+				Committed = false,
+				UserId = userId
+			};
+		}
+
+		public async void SaveHistoryState()
+		{
+			_appDbContext.History.Add(_bufferHistory);
+			await _appDbContext.SaveChangesAsync();
+		}
+
+
 	}
 }

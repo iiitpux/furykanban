@@ -19,12 +19,13 @@
 		</div>
 	</div>
 }
-	<AuthorizeView>
-		<NotAuthorized>
-			<RedirectToLogin />
-		</NotAuthorized>
-		<Authorized>
-			<div class="row testimonial-group">
+<AuthorizeView>
+	<NotAuthorized>
+		<RedirectToLogin />
+	</NotAuthorized>
+	<Authorized>
+		<div class="testimonial-group">
+			<div class="row">
 				@foreach (var item in AppStateService.State.Stages)
 				{
 					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
@@ -40,35 +41,36 @@
 				}
 				<ColumnEdit></ColumnEdit>
 			</div>
-		</Authorized>
-	</AuthorizeView>
+		</div>
+	</Authorized>
+</AuthorizeView>
 
-	@code {
-		private List<IErrorResult> ErrorList = new List<IErrorResult>();
+@code {
+	private List<IErrorResult> ErrorList = new List<IErrorResult>();
 
-		protected override async Task OnInitializedAsync()
+	protected override async Task OnInitializedAsync()
+	{
+		AppStateService.OnStateChanged += OnStateChanged;
+
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+
+		if (user.Identity.IsAuthenticated)
 		{
-			AppStateService.OnStateChanged += OnStateChanged;
-
-			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-			var user = authState.User;
-
-			if (user.Identity.IsAuthenticated)
-			{
-				var appState = await Http.GetAsyncEx<FuryKanban.Shared.Model.AppStateResponse>("api/app");
-				AppStateService.SetState(appState.AppState);
-			}
-
-			Http.OnApiError += OnApiError;
+			var appState = await Http.GetAsyncEx<FuryKanban.Shared.Model.AppStateResponse>("api/app");
+			AppStateService.SetState(appState.AppState);
 		}
 
-		private void OnStateChanged(object sender, EventArgs e)
-		{
-			base.StateHasChanged();
-		}
-
-		private void OnApiError(object sender, IErrorResult error)
-		{
-			//todo- show error
-		}
+		Http.OnApiError += OnApiError;
 	}
+
+	private void OnStateChanged(object sender, EventArgs e)
+	{
+		base.StateHasChanged();
+	}
+
+	private void OnApiError(object sender, IErrorResult error)
+	{
+		//todo- show error
+	}
+}

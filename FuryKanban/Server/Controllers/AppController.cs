@@ -25,9 +25,12 @@ namespace FuryKanban.Server.Controllers
 		}
 
         [HttpGet]
-        public async Task<AppState> Get()
+        public async Task<AppStateResponse> Get()
         {
-			return await _appService.GetStateAsync(_authUser.Id);
+			return new AppStateResponse()
+			{
+				AppState = await _appService.GetStateAsync(_authUser.Id)
+			};
         }
     }
 }
