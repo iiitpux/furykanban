@@ -1,4 +1,4 @@
-﻿using FuryKanban.Logic;
+﻿using FuryKanban.Server.Contract;
 using FuryKanban.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;

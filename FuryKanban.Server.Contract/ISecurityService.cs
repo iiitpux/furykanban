@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FuryKanban.Logic
+namespace FuryKanban.Server.Contract
 {
 	public interface ISecurityService
 	{

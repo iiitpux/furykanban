@@ -7,13 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using FuryKanban.DataLayer;
-using FuryKanban.Logic;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using FuryKanban.Server.Logic;
 using FuryKanban.Server.Filters;
+using FuryKanban.Server.Contract;
 
 namespace FuryKanban.Server
 {
@@ -37,16 +37,13 @@ namespace FuryKanban.Server
 		{
 			//todo- add automapper
 			services.AddEntityFrameworkSqlite().AddDbContext<AppDbContext>();
-			//services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-			//	.AddCookie();
 			services.AddAuthorization();
 			services.AddScoped<ISecurityService, SecurityService>();
-			services.AddScoped<AppStateService>();
-			services.AddScoped<StageService>();
-			services.AddScoped<IssueService>();
+			services.AddScoped<IAppStateService, AppStateService>();
+			services.AddScoped<IIssueService, IssueService>();
+			services.AddScoped<IStageService, StageService>();
 			services.AddScoped<AuthUser>();
 			services.AddScoped<AppStateFilter>();
-
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 		}

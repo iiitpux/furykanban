@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using FuryKanban.Common;
 using FuryKanban.DataLayer.Dto;
 using Microsoft.Extensions.Logging;
+using FuryKanban.Server.Contract;
 
-namespace FuryKanban.Logic
+namespace FuryKanban.Server.Logic
 {
 	public class SecurityService : ISecurityService
 	{
@@ -26,7 +27,7 @@ namespace FuryKanban.Logic
 		public async Task<int?> GetUserIdByTokenAsync(string token)
 		{
 			var existToken = await _appDbContext.Tokens.SingleOrDefaultAsync(p => p.Code == token);
-			if(existToken != null)
+			if (existToken != null)
 			{
 				return existToken.UserId;
 			}
@@ -36,9 +37,9 @@ namespace FuryKanban.Logic
 		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest registration)
 		{
 			var user = await _appDbContext.Users.SingleOrDefaultAsync(p => p.Login == registration.Login);
-			if(user != null)
-				return new RegistrationResponse(){HasError = true, ErrorMessage = "User with same login already exist"};
-			
+			if (user != null)
+				return new RegistrationResponse() { HasError = true, ErrorMessage = "User with same login already exist" };
+
 			string salt = Guid.NewGuid().ToString();
 			var newUser = new UserDto()
 			{
@@ -49,7 +50,8 @@ namespace FuryKanban.Logic
 				CreateDate = DateTime.Now
 			};
 
-			var token = new TokenDto() { 
+			var token = new TokenDto()
+			{
 				Code = Guid.NewGuid().ToString(),
 				CreatedDate = DateTime.Now
 			};
@@ -59,10 +61,10 @@ namespace FuryKanban.Logic
 			var isValid = ValidationChecker.Check<UserDto>(newUser, out var results);
 			if (!isValid)
 			{
-				_logger.Log(LogLevel.Error, "Model is not valid because " + string.Join(", ", results.Select( s => s.ErrorMessage).ToArray()));
-				return new RegistrationResponse(){HasError = true, ErrorMessage = "Server error"};
+				_logger.Log(LogLevel.Error, "Model is not valid because " + string.Join(", ", results.Select(s => s.ErrorMessage).ToArray()));
+				return new RegistrationResponse() { HasError = true, ErrorMessage = "Server error" };
 			}
-				
+
 			await _appDbContext.AddAsync<UserDto>(newUser);
 			await _appDbContext.SaveChangesAsync();
 

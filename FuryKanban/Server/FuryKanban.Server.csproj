@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\FuryKanban.DataLayer\FuryKanban.DataLayer.csproj" />
-    <ProjectReference Include="..\..\FuryKanban.Logic\FuryKanban.Logic.csproj" />
     <ProjectReference Include="..\..\FuryKanban.Server.Logic\FuryKanban.Server.Logic.csproj" />
     <ProjectReference Include="..\Client\FuryKanban.Client.csproj" />
     <ProjectReference Include="..\Shared\FuryKanban.Shared.csproj" />

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FuryKanban.DataLayer;
 using FuryKanban.DataLayer.Dto;
+using FuryKanban.Server.Contract;
 using FuryKanban.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FuryKanban.Server.Logic
 {
-	public class AppStateService
+	public class AppStateService : IAppStateService
 	{
 		private AppDbContext _appDbContext;
 		private HistoryDto _bufferHistory;
@@ -36,7 +37,7 @@ namespace FuryKanban.Server.Logic
 			};
 		}
 
-		public async void SetHistoryState(int userId, string title)
+		public async Task SetHistoryStateAsync(int userId, string title)
 		{
 			var state = await GetStateAsync(userId);
 			_bufferHistory = new HistoryDto()
@@ -48,7 +49,7 @@ namespace FuryKanban.Server.Logic
 			};
 		}
 
-		public async void SaveHistoryState()
+		public async Task SaveHistoryStateAsync()
 		{
 			_appDbContext.History.Add(_bufferHistory);
 			await _appDbContext.SaveChangesAsync();

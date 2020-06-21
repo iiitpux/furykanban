@@ -1,4 +1,5 @@
 ﻿using FuryKanban.DataLayer;
+using FuryKanban.Server.Contract;
 using FuryKanban.Server.Logic;
 using FuryKanban.Shared.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,10 @@ namespace FuryKanban.Server.Filters
 {
 	public class AppStateFilter : Attribute, IActionFilter
 	{
-		private AppStateService _appStateService;
+		private IAppStateService _appStateService;
 		private AuthUser _authUser;
 
-		public AppStateFilter(AppStateService appStateService, AuthUser authUser)
+		public AppStateFilter(IAppStateService appStateService, AuthUser authUser)
 		{
 			_appStateService = appStateService;
 			_authUser = authUser;
@@ -47,7 +48,7 @@ namespace FuryKanban.Server.Filters
 			if (String.IsNullOrWhiteSpace(action))
 				return;
 
-			_appStateService.SetHistoryState(_authUser.Id, action);
+			_appStateService.SetHistoryStateAsync(_authUser.Id, action);
 		}
 
 		public void OnActionExecuted(ActionExecutedContext context)
@@ -61,7 +62,7 @@ namespace FuryKanban.Server.Filters
 			var error = ((ObjectResult)context.Result).Value as IErrorResult;
 			if(!error.HasError)
 			{
-				_appStateService.SaveHistoryState();
+				_appStateService.SaveHistoryStateAsync();
 			}
 		}
 	}

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using FuryKanban.Client.Core;
 using FuryKanban.Client.Core.Security;
 using Blazored.LocalStorage;
+using Blazor.DragDrop.Core;
 
 namespace FuryKanban.Client
 {
@@ -22,11 +23,12 @@ namespace FuryKanban.Client
 			builder.RootComponents.Add<App>("app");
 
 			builder.Services.AddBlazoredLocalStorage();
-			//builder.Services.Add<ILocalStorageService, LocalStorageService>();
 			builder.Services.AddScoped(provider => new AppHttpClient(provider.GetRequiredService<ILocalStorageService>()) { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 			builder.Services.AddScoped<StageService>();
 			builder.Services.AddScoped<IssueService>();
 			builder.Services.AddScoped<AppStateService>();
+			//todo dragndrop
+			//builder.Services.AddBlazorDragDrop();
 			
 			#region auth
 			builder.Services.AddScoped<SecurityService>();

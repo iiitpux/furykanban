@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FuryKanban.DataLayer\FuryKanban.DataLayer.csproj" />
     <ProjectReference Include="..\FuryKanban\Shared\FuryKanban.Shared.csproj" />
   </ItemGroup>
 

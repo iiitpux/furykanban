@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FuryKanban.Server.Contract;
 using FuryKanban.Server.Filters;
 using FuryKanban.Server.Logic;
 using FuryKanban.Shared.Model;
@@ -16,10 +17,10 @@ namespace FuryKanban.Server.Controllers
     [TokenAuthorization]
     public class StageController : ControllerBase
     {
-        private readonly StageService _stageService;
+        private readonly IStageService _stageService;
         private readonly AuthUser _authUser;
 
-        public StageController(StageService stageService, AuthUser authUser)
+        public StageController(IStageService stageService, AuthUser authUser)
         {
             _stageService = stageService;
             _authUser = authUser;

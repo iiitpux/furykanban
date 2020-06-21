@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FuryKanban.Server.Contract;
 using FuryKanban.Server.Filters;
 using FuryKanban.Server.Logic;
 using FuryKanban.Shared.Model;
@@ -15,10 +16,10 @@ namespace FuryKanban.Server.Controllers
     [TokenAuthorization]
     public class IssueController : ControllerBase
     {
-        private readonly IssueService _issueService;
+        private readonly IIssueService _issueService;
         private readonly AuthUser _authUser;
 
-        public IssueController(IssueService issueService, AuthUser authUser)
+        public IssueController(IIssueService issueService, AuthUser authUser)
         {
             _issueService = issueService;
             _authUser = authUser;

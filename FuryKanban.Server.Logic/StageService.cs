@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FuryKanban.DataLayer;
 using FuryKanban.DataLayer.Dto;
+using FuryKanban.Server.Contract;
 using FuryKanban.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace FuryKanban.Server.Logic
 {
-	//todo- to interface
-	public class StageService
+	//todo- logger?
+	public class StageService : IStageService
 	{
 		private AppDbContext _appDbContext;
 		private ILogger<StageService> _logger;
