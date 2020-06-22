@@ -31,7 +31,6 @@ namespace FuryKanban.Server.Logic
 				var stageDto = new StageDto()
 				{
 					UserId = userId,
-					Order = stage.Order,
 					Title = stage.Title
 				};
 				_appDbContext.Stages.Add(stageDto);
@@ -44,7 +43,6 @@ namespace FuryKanban.Server.Logic
 				if (exist != null)
 				{
 					exist.Title = stage.Title;
-					exist.Order = stage.Order;
 					await _appDbContext.SaveChangesAsync();
 				}
 				else

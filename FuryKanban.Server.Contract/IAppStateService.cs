@@ -11,5 +11,5 @@ namespace FuryKanban.Server.Contract
 		Task SetHistoryStateAsync(int userId, string title);
 		
 		Task SaveHistoryStateAsync();
-	}
+		Task<AppStateResponse> LoadHistory(int id, int userId);	}
 }

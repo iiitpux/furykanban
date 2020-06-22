@@ -10,7 +10,7 @@ namespace FuryKanban.Shared.Model
 	{
 		//todo linkedlist
 		public List<Stage> Stages { set; get; }
-		public List<Issue> Issues { set; get; }
+		public List<History> UndoList { set; get; }
 
 		public class Stage
 		{
@@ -35,6 +35,12 @@ namespace FuryKanban.Shared.Model
 			public string Body { set; get; }
 			
 			public int Order { set; get; }
+		}
+
+		public class History
+		{
+			public int Id { set; get; }
+			public string Title { set; get; }
 		}
 	}
 }

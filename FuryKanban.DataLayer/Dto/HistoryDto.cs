@@ -11,6 +11,5 @@ namespace FuryKanban.DataLayer.Dto
 		public UserDto User { set; get; }
 		public string Title { set; get; }
 		public string Body { set; get; }
-		public bool Committed { set; get; } = false;
 	}
 }

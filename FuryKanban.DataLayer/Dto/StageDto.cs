@@ -12,8 +12,6 @@ namespace FuryKanban.DataLayer.Dto
         
         public string Title { set; get; }
 
-        public int Order { set; get; }
-
         public int UserId { set; get; }
         
         public UserDto User { set; get; }

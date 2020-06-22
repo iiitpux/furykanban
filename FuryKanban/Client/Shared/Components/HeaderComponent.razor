@@ -1,4 +1,5 @@
 ﻿@inject FuryKanban.Client.Core.LoaderService LoaderService
+@inject FuryKanban.Client.Core.AppStateService AppStateService
 <header class="c-header c-header-light c-header-fixed">
 	@*<div class="c-header-brand">
 			<img src="/FuryKanban.png" class="c-header-brand-center fk-brand-logo" />
@@ -22,8 +23,10 @@
 					<button class="btn btn-secondary" type="button"><i class="fa fa-undo"></i></button>
 					<button class="btn btn-secondary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
 					<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="position: absolute; left: 0px; top: 0px; margin: 0px; right: auto; bottom: auto; transform: translate(0px, 35px);" data-popper-placement="bottom-start">
-						<a class="dropdown-item" href="#">Add column "Title"</a>
-						<a class="dropdown-item" href="#">Remove issue "New task"</a>
+						@foreach (var item in AppStateService.State.UndoList.OrderByDescending(p => p.Id))
+						{
+							<a class="dropdown-item" @onclick="async() => await HistoryClick(item.Id)">@item.Title @item.Id</a>
+						}
 					</div>
 				</div>
 			</div>
@@ -91,6 +94,7 @@
 		//todo- unsub
 		LoaderService.OnStart += ShowLoader;
 		LoaderService.OnEnd += HideLoader;
+		AppStateService.OnStateChanged += OnStateChanged;
 	}
 	private void ShowLoader(object sender, EventArgs e)
 	{
@@ -102,5 +106,15 @@
 	{
 		_showLoader = false;
 		StateHasChanged();
+	}
+
+	private void OnStateChanged(object sender, EventArgs e)
+	{
+		StateHasChanged();
+	}
+
+	private async Task HistoryClick(int id)
+	{
+		await AppStateService.LoadHistoryAsync(id);
 	}
 }

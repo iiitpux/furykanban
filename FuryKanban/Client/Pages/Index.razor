@@ -30,7 +30,7 @@
 	<Authorized Context="Auth">
 		<div class="testimonial-group">
 			<div class="row">
-				@foreach (var stage in AppStateService.State.Stages)
+				@foreach (var stage in AppStateService.State.Stages.OrderBy(p=>p.Id))
 				{
 					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
 						<StageComponent Stage="stage">
@@ -62,8 +62,7 @@
 
 		if (user.Identity.IsAuthenticated)
 		{
-			var appState = await Http.GetAsyncEx<FuryKanban.Shared.Model.AppStateResponse>("api/app");
-			AppStateService.SetState(appState.AppState);
+			await AppStateService.LoadStateAsync();
 		}
 
 		//todo unsub
@@ -73,7 +72,7 @@
 
 	private void OnStateChanged(object sender, EventArgs e)
 	{
-		base.StateHasChanged();
+		StateHasChanged();
 	}
 
 	private void OnApiError(object sender, IErrorResult error)

@@ -34,5 +34,11 @@ namespace FuryKanban.Server.Controllers
 				AppState = await _appService.GetStateAsync(_authUser.Id)
 			};
         }
+
+		[HttpGet(template:"history/{id}")]
+		public async Task<AppStateResponse> History(int id)
+		{
+			return await _appService.LoadHistory(id, _authUser.Id);
+		}
     }
 }

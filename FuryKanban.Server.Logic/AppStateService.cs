@@ -24,10 +24,12 @@ namespace FuryKanban.Server.Logic
 		//todo- history
 		public async Task<AppState> GetStateAsync(int userId)
 		{
-			var stagesDto = await _appDbContext.Stages.Where(p => p.UserId == userId).Include(p=>p.Issues).ToListAsync();
-			var config = new MapperConfiguration(cfg => { 
+			var stagesDto = await _appDbContext.Stages.Where(p => p.UserId == userId).Include(p => p.Issues).ToListAsync();
+			var config = new MapperConfiguration(cfg =>
+			{
 				cfg.CreateMap<StageDto, AppState.Stage>();
 				cfg.CreateMap<IssueDto, AppState.Issue>();
+				cfg.CreateMap<HistoryDto, AppState.History>();
 			});
 			var mapper = new Mapper(config);
 			var stages = mapper.Map<List<AppState.Stage>>(stagesDto);
@@ -47,31 +49,86 @@ namespace FuryKanban.Server.Logic
 				}
 			}
 
+			var undoList = mapper.Map<List<AppState.History>>(await _appDbContext.History.Where(p => p.UserId == userId).ToListAsync());
+
 			return new AppState()
 			{
-				Stages = stages
+				Stages = stages,
+				UndoList = undoList
 			};
 		}
 
 		public async Task SetHistoryStateAsync(int userId, string title)
 		{
-			var state = await GetStateAsync(userId);
+			var state = await _appDbContext.Stages.Where(p => p.UserId == userId).Include(p => p.Issues).ToListAsync();
 			_bufferHistory = new HistoryDto()
 			{
 				Body = JsonConvert.SerializeObject(state),
 				Title = title,
-				Committed = false,
 				UserId = userId
 			};
 		}
 
 		public async Task SaveHistoryStateAsync()
 		{
-			//todo- only 10 records
+			if (_bufferHistory == null)
+				return;
+
+			var toRemove = _appDbContext.History
+				.Where(p => p.UserId == _bufferHistory.UserId)
+				.OrderByDescending(p => p.Id)
+				.Skip(9);
+			_appDbContext.History.RemoveRange(toRemove);
+
 			_appDbContext.History.Add(_bufferHistory);
 			await _appDbContext.SaveChangesAsync();
 		}
 
+		public async Task<AppStateResponse> LoadHistory(int id, int userId)
+		{
+			var history = await _appDbContext.History.FindAsync(id);
+			if (history == null || history.UserId != userId)
+				return new AppStateResponse()
+				{
+					HasError = true,
+					ErrorMessage = "History not found"
+				};
 
+			var historyToRemove = _appDbContext.History.Where(p => p.UserId == userId && p.Id >= history.Id);
+			_appDbContext.History.RemoveRange(historyToRemove);
+
+			var stagesToRemove = _appDbContext.Stages.Where(p => p.UserId == userId);
+			_appDbContext.Stages.RemoveRange(stagesToRemove);
+
+			var issuesToRemove = _appDbContext.Issues.Where(p => stagesToRemove.SelectMany(i => i.Issues).Select(z => z.Id).Contains(p.Id));
+			_appDbContext.Issues.RemoveRange(issuesToRemove);
+
+			var stages = JsonConvert.DeserializeObject<List<StageDto>>(history.Body);
+
+			foreach (var stage in stages.OrderBy(p=>p.Id))
+			{
+				var newStage = new StageDto() { 
+					Title = stage.Title,
+					UserId = stage.UserId,
+					Issues = new List<IssueDto>()
+				};
+				//todo- nextissueid
+				foreach (var issue in stage.Issues)
+				{
+					newStage.Issues.Add(new IssueDto() { 
+						Body = issue.Body,
+						CreatedDateTime = issue.CreatedDateTime,
+						StageId = issue.StageId,
+						Title = issue.Title,
+						UserId = issue.UserId
+					});
+				}
+				_appDbContext.Stages.Add(newStage);
+			}
+
+			await _appDbContext.SaveChangesAsync();
+
+			return new AppStateResponse() { AppState = await GetStateAsync(userId) };
+		}
 	}
 }
