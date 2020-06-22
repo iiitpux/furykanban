@@ -31,6 +31,22 @@ namespace FuryKanban.Server.Logic
 			});
 			var mapper = new Mapper(config);
 			var stages = mapper.Map<List<AppState.Stage>>(stagesDto);
+
+			var allIssues = stages.SelectMany(p => p.Issues).ToList();
+
+			foreach (var stage in stagesDto)
+			{
+				var lastIssue = stage.Issues.SingleOrDefault(p => !p.NextIssueId.HasValue);
+				var backIndex = 0;
+				while (lastIssue != null)
+				{
+					var iss = allIssues.Single(p => p.Id == lastIssue.Id);
+					iss.Order = stage.Issues.Count - backIndex;
+					backIndex++;
+					lastIssue = stage.Issues.SingleOrDefault(p => p.NextIssueId == lastIssue.Id);
+				}
+			}
+
 			return new AppState()
 			{
 				Stages = stages
@@ -51,6 +67,7 @@ namespace FuryKanban.Server.Logic
 
 		public async Task SaveHistoryStateAsync()
 		{
+			//todo- only 10 records
 			_appDbContext.History.Add(_bufferHistory);
 			await _appDbContext.SaveChangesAsync();
 		}

@@ -27,6 +27,7 @@ namespace FuryKanban.Shared.Model
 		public class Issue
 		{
 			public int Id { set; get; }
+
 			public int StageId { set; get; }
 			
 			public string Title { set; get; }

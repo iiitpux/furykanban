@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FuryKanban.Server.Contract;
 using FuryKanban.Server.Filters;
@@ -29,6 +30,8 @@ namespace FuryKanban.Server.Controllers
 		[ServiceFilter(typeof(AppStateFilter))]
 		public async Task<IssueChangeResponse> Post(AppState.Issue issue)
 		{
+			//todo remove
+			Thread.Sleep(2000);
 			return await _issueService.InsertAsync(issue, _authUser.Id);
 		}
 
@@ -44,6 +47,13 @@ namespace FuryKanban.Server.Controllers
 		public async Task<IssueChangeResponse> Delete(int id)
 		{
 			return await _issueService.DeleteAsync(id, _authUser.Id);
+		}
+
+		[HttpPost(template:"reorder")]
+		[ServiceFilter(typeof(AppStateFilter))]
+		public async Task<IssueChangeResponse> Reorder(IssueReorder issueReorder)
+		{
+			return await _issueService.ReorderAsync(issueReorder, _authUser.Id);
 		}
 	}
 }

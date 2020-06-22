@@ -53,7 +53,7 @@ namespace FuryKanban.Server.Filters
 
 		public void OnActionExecuted(ActionExecutedContext context)
 		{
-			var result = ((ObjectResult)context.Result).Value as IAppStateResult;
+			var result = ((ObjectResult)context.Result)?.Value as IAppStateResult;
 			if (result != null)
 			{
 				result.AppState = _appStateService.GetStateAsync(_authUser.Id).GetAwaiter().GetResult();

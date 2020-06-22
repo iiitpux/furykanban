@@ -7,6 +7,7 @@
 @inject AppHttpClient Http
 @inject StageService StageService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject DragndropService DragndropService
 <Animate Animation="Animations.FadeRight" Duration="TimeSpan.FromSeconds(1)">
 	<div class="card card-accent-warning">
 		<div class="card-header">
@@ -32,11 +33,14 @@
 			}
 
 		</div>
-		<div class="card-body bg-secondary">
-			@if (ShowIssueEdit)
-			{
+
+		@if (ShowIssueEdit)
+		{
+			<div class="card-body bg-secondary" style="padding-top:0px">
 				<IssueEditComponent Issue="new FuryKanban.Shared.Model.AppState.Issue() { StageId = Stage.Id }" AfterSave="()=>ShowIssueEdit = false" AfterCancel="() => ShowIssueEdit = false"></IssueEditComponent>
-			}
+			</div>
+		}
+		<div class="card-body bg-secondary" style="padding-top:0px" ondragover="event.preventDefault();" @ondrop="() => DragndropService.ParentDrop(Stage.Id)">
 			@if (Wrapper != null)
 			{
 				@Wrapper

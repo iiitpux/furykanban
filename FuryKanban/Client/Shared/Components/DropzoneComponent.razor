@@ -1,0 +1,41 @@
+﻿@inject FuryKanban.Client.Core.DragndropService DragndropService
+
+<div class="row dropzone @_dropClass @_activeDropClass" @ondrop="() => DragndropService.Drop(Id)" @ondragenter="DragEnter" @ondragleave="DragLeave"></div>
+
+@code {
+	[Parameter]
+	public int Id { set; get; }
+
+	private string _dropClass { set; get; } = "";
+
+	private string _activeDropClass { set; get; } = "";
+
+	protected override async Task OnInitializedAsync()
+	{
+		DragndropService.OnShowDropzone += OnShowDropzone;
+		DragndropService.OnHideDropzone += OnHideDropzone;
+	}
+
+	private void OnShowDropzone(object sender, EventArgs e)
+	{
+		_dropClass = "dropzone-active";
+		StateHasChanged();
+	}
+
+	private void OnHideDropzone(object sender, EventArgs e)
+	{
+		_dropClass = "";
+		_activeDropClass = "";
+		StateHasChanged();
+	}
+
+	private void DragEnter()
+	{
+		_activeDropClass = "can-drop";
+	}
+
+	private void DragLeave()
+	{
+		_activeDropClass = "";
+	}
+}

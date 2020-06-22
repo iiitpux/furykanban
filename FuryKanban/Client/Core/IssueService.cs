@@ -41,5 +41,14 @@ namespace FuryKanban.Client.Core
 
 			return result;
 		}
+
+		public async Task<IssueChangeResponse> ReorderIssueAsync(IssueReorder issueReorder)
+		{
+			var result = await _httpClient.PostAsyncEx<IssueChangeResponse, IssueReorder>("api/issue/reorder", issueReorder, $"Reorder issue");
+
+			OnStateChanged?.Invoke(this, result.AppState);
+
+			return result;
+		}
 	}
 }

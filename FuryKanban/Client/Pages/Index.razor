@@ -6,10 +6,14 @@
 @using BlazorAnimate
 @using FuryKanban.Client.Shared.Components
 @using FuryKanban.Shared.Interfaces
+@using FuryKanban.Shared.Model
 
 @inject AppHttpClient Http
 @inject AppStateService AppStateService
+@inject IssueService IssueService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject DragndropService DragndropService
+@inject LoaderService LoaderService
 @foreach (var error in ErrorList)
 {
 	<div class="row">
@@ -23,17 +27,18 @@
 	<NotAuthorized>
 		<RedirectToLogin />
 	</NotAuthorized>
-	<Authorized>
+	<Authorized Context="Auth">
 		<div class="testimonial-group">
 			<div class="row">
-				@foreach (var item in AppStateService.State.Stages)
+				@foreach (var stage in AppStateService.State.Stages)
 				{
 					<div class="col-4 col-lg-4 col-md-4 col-xs-4">
-						<StageComponent Stage="item">
+						<StageComponent Stage="stage">
 							<Wrapper>
-								@foreach (var item in item.Issues)
+								<DropzoneComponent Id="0"></DropzoneComponent>
+								@foreach (var issue in stage.Issues.OrderBy(p => p.Order))
 								{
-									<IssueComponent Issue="item"></IssueComponent>
+									<IssueComponent Issue="issue"></IssueComponent>
 								}
 							</Wrapper>
 						</StageComponent>
@@ -57,11 +62,15 @@
 
 		if (user.Identity.IsAuthenticated)
 		{
+			await LoaderService.LoadStart();
 			var appState = await Http.GetAsyncEx<FuryKanban.Shared.Model.AppStateResponse>("api/app");
 			AppStateService.SetState(appState.AppState);
+			await LoaderService.LoadEnd();
 		}
 
+		//todo unsub
 		Http.OnApiError += OnApiError;
+		DragndropService.OnDrop +=async (sender, arg) => await Drop();
 	}
 
 	private void OnStateChanged(object sender, EventArgs e)
@@ -72,5 +81,16 @@
 	private void OnApiError(object sender, IErrorResult error)
 	{
 		//todo- show error
+	}
+
+	public async Task Drop()
+	{
+		var issueReorder = new IssueReorder()
+		{
+			Id = DragndropService.DragId,
+			TargetId = DragndropService.DropId,
+			NewStageId = DragndropService.ParentId
+		};
+		await IssueService.ReorderIssueAsync(issueReorder);
 	}
 }

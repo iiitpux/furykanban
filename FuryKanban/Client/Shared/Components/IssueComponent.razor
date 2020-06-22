@@ -1,7 +1,8 @@
 ﻿@inject FuryKanban.Client.Core.IssueService IssueService
+@inject FuryKanban.Client.Core.DragndropService DragndropService
 @if (!IsEdit)
 {
-	<div class="card">
+	<div class="card" style="margin-bottom:0px" draggable="true" @ondragstart="async () => await OnDragStart()" @ondragend="async () => await OnDragEnd()">
 		<div class="card-header">
 			@Issue.Title
 			<div class="card-header-actions">
@@ -17,6 +18,7 @@
 			@Issue.Body
 		</div>
 	</div>
+	<DropzoneComponent Id="Issue.Id"></DropzoneComponent>
 }
 else
 {
@@ -32,5 +34,14 @@ else
 	[Parameter]
 	public bool IsVisible { set; get; } = true;
 
+	private async Task OnDragStart()
+	{
+		DragndropService.Drag(Issue.Id);
+		await DragndropService.ShowDropzoneAsync();
+	}
 
+	private async Task OnDragEnd()
+	{
+		await DragndropService.HideDropzoneAsync();
+	}
 }

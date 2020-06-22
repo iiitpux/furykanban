@@ -1,4 +1,5 @@
 ﻿@inject FuryKanban.Client.Core.IssueService IssueService
+@inject FuryKanban.Client.Core.LoaderService LoaderService
 <div class="card">
 	<EditForm model="@Issue" OnValidSubmit="HandleValidSubmit">
 		<DataAnnotationsValidator />
@@ -46,6 +47,7 @@
 
 	private async Task HandleValidSubmit()
 	{
+		await LoaderService.LoadStart();
 		_isLoading = true;
 
 		if(Issue.Id==0)
@@ -58,6 +60,7 @@
 		}
 
 		await AfterSave.InvokeAsync(null);
+		await LoaderService.LoadEnd();
 		_isLoading = false;
 	}
 }

@@ -1,0 +1,106 @@
+﻿@inject FuryKanban.Client.Core.LoaderService LoaderService
+<header class="c-header c-header-light c-header-fixed">
+	@*<div class="c-header-brand">
+			<img src="/FuryKanban.png" class="c-header-brand-center fk-brand-logo" />
+		</div>*@
+	<ul class="c-header-nav d-md-down-none">
+		<li class="c-header-nav-item px-3">
+			@if (_showLoader)
+			{
+				<div style="height:30px; width:59px" class="text-center">
+					<i class="spinner-border spinner-border"></i>
+				</div>
+			}
+			else
+			{
+				<img src="/FuryKanban.png" class="fk-brand-logo" />
+			}
+		</li>
+		<li class="c-header-nav-item px-3">
+			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+				<div class="btn-group" role="group">
+					<button class="btn btn-secondary" type="button"><i class="fa fa-undo"></i></button>
+					<button class="btn btn-secondary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
+					<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="position: absolute; left: 0px; top: 0px; margin: 0px; right: auto; bottom: auto; transform: translate(0px, 35px);" data-popper-placement="bottom-start">
+						<a class="dropdown-item" href="#">Add column "Title"</a>
+						<a class="dropdown-item" href="#">Remove issue "New task"</a>
+					</div>
+				</div>
+			</div>
+			<button class="btn btn-secondary" type="button"><i class="fa fa-repeat"></i></button>
+		</li>
+	</ul>
+	<ul class="c-header-nav  mfs-auto">
+		<li class="c-header-nav-item dropdown">
+			<a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+				<div class="c-avatar">Signout</div>
+			</a>
+			<div class="dropdown-menu dropdown-menu-right pt-0">
+				<div class="dropdown-header bg-light py-2"><strong>Account</strong></div><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-bell"></use>
+					</svg> Updates<span class="badge badge-info mfs-auto">42</span>
+				</a><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-envelope-open"></use>
+					</svg> Messages<span class="badge badge-success mfs-auto">42</span>
+				</a><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-task"></use>
+					</svg> Tasks<span class="badge badge-danger mfs-auto">42</span>
+				</a><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-comment-square"></use>
+					</svg> Comments<span class="badge badge-warning mfs-auto">42</span>
+				</a>
+				<div class="dropdown-header bg-light py-2"><strong>Settings</strong></div><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-user"></use>
+					</svg> Profile
+				</a><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-settings"></use>
+					</svg> Settings
+				</a><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-credit-card"></use>
+					</svg> Payments<span class="badge badge-secondary mfs-auto">42</span>
+				</a><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-file"></use>
+					</svg> Projects<span class="badge badge-primary mfs-auto">42</span>
+				</a>
+				<div class="dropdown-divider"></div><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-lock-locked"></use>
+					</svg> Lock Account
+				</a><a class="dropdown-item" href="#">
+					<svg class="c-icon mfe-2">
+						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-account-logout"></use>
+					</svg> Logout
+				</a>
+			</div>
+		</li>
+	</ul>
+</header>
+
+@code {
+	private bool _showLoader { set; get; } = false;
+	protected override async Task OnInitializedAsync()
+	{
+		//todo- unsub
+		LoaderService.OnStart += ShowLoader;
+		LoaderService.OnEnd += HideLoader;
+	}
+	private void ShowLoader(object sender, EventArgs e)
+	{
+		_showLoader = true;
+		StateHasChanged();
+	}
+
+	private void HideLoader(object sender, EventArgs e)
+	{
+		_showLoader = false;
+		StateHasChanged();
+	}
+}

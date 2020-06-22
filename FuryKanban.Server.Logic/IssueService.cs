@@ -37,6 +37,8 @@ namespace FuryKanban.Server.Logic
 				};
 			}
 
+			var lastIssue = await _appDbContext.Issues.SingleOrDefaultAsync(p => p.StageId == stage.Id && !p.NextIssueId.HasValue);
+
 			var issueDto = new IssueDto()
 			{
 				Body = issue.Body,
@@ -47,6 +49,14 @@ namespace FuryKanban.Server.Logic
 			};
 
 			_appDbContext.Issues.Add(issueDto);
+
+			await _appDbContext.SaveChangesAsync();
+
+			if(lastIssue != null)
+			{
+				lastIssue.NextIssueId = issueDto.Id;
+			}
+
 			await _appDbContext.SaveChangesAsync();
 
 			return new IssueChangeResponse();
@@ -82,6 +92,68 @@ namespace FuryKanban.Server.Logic
 				};
 
 			_appDbContext.Issues.Remove(exist);
+			await _appDbContext.SaveChangesAsync();
+
+			return new IssueChangeResponse();
+		}
+
+		public async Task<IssueChangeResponse> ReorderAsync(IssueReorder issueReorder, int userId)
+		{
+			if (issueReorder.Id == issueReorder.TargetId)
+				return new IssueChangeResponse();
+
+			//remove from old position
+			var exist = await _appDbContext.Issues.Include(p => p.Stage).SingleOrDefaultAsync(p => p.Id == issueReorder.Id);
+
+			if (exist == null || exist.Stage == null || exist.Stage.UserId != userId)
+				return new IssueChangeResponse()
+				{
+					HasError = true,
+					ErrorMessage = "Issue not found"
+				};
+
+			if (exist.StageId != issueReorder.NewStageId)
+			{
+				var existStage = await _appDbContext.Stages.FindAsync(issueReorder.NewStageId);
+				if (existStage != null && existStage.UserId != userId)
+					return new IssueChangeResponse()
+					{
+						HasError = true,
+						ErrorMessage = "Issue not found"
+					};
+			}
+
+			var prevIssue = await _appDbContext.Issues.SingleOrDefaultAsync(p => p.NextIssueId == issueReorder.Id);
+			if (prevIssue != null)
+				prevIssue.NextIssueId = exist.NextIssueId;
+
+			//insert to new position
+			exist.StageId = issueReorder.NewStageId;
+
+			if (issueReorder.TargetId == 0)
+			{
+				var allNextIds = await _appDbContext.Issues.Where(p => p.StageId == issueReorder.NewStageId 
+					&& p.NextIssueId.HasValue)
+					.Select(p => p.NextIssueId.Value).ToListAsync();
+				var first = await _appDbContext.Issues.SingleOrDefaultAsync(p => !allNextIds.Contains(p.Id)
+					&& p.StageId == issueReorder.NewStageId);
+				if(first != null)
+					exist.NextIssueId = first.Id;
+			}
+			else
+			{
+				var targetIssue = await _appDbContext.Issues.Include(p => p.Stage).SingleOrDefaultAsync(p => p.Id == issueReorder.TargetId);
+				if (targetIssue == null || targetIssue.Stage == null || targetIssue.Stage.UserId != userId)
+					return new IssueChangeResponse()
+					{
+						HasError = true,
+						ErrorMessage = "Issue not found"
+					};
+
+				exist.NextIssueId = targetIssue.NextIssueId;
+				targetIssue.NextIssueId = exist.Id;
+			}
+
 			await _appDbContext.SaveChangesAsync();
 
 			return new IssueChangeResponse();

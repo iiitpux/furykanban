@@ -24,10 +24,8 @@ namespace FuryKanban.DataLayer.Dto
 
         public StageDto Stage { set; get; }
 
-        //public int PrevIssueId { set; get; }
-        //public IssueDto PrevIssue { set; get; }
-
-        //public int NextIssueId { set; get; }
-        //public IssueDto NextIssue { set; get; }
+        public int? NextIssueId { set; get; }
+        
+        public IssueDto NextIssue { set; get; }
     }
 }

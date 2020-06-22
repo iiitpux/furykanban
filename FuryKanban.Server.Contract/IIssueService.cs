@@ -11,5 +11,6 @@ namespace FuryKanban.Server.Contract
 		Task<IssueChangeResponse> InsertAsync(AppState.Issue issue, int userId);
 		Task<IssueChangeResponse> UpdateAsync(AppState.Issue issue, int userId);
 		Task<IssueChangeResponse> DeleteAsync(int id, int userId);
+		Task<IssueChangeResponse> ReorderAsync(IssueReorder issueReorder, int userId);
 	}
 }
