@@ -7,7 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject SecurityService SecurityService;
 
-<div class="container">
+<div class="container"  style="margin-top:30px">
 	<div class="row justify-content-center">
 		<div class="col-md-6">
 			<div class="card mx-4">
@@ -19,35 +19,31 @@
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
 								<span class="input-group-text">
-									<svg class="c-icon">
-										<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-user"></use>
-									</svg>
+									<i class="fa fa-user"></i>
 								</span>
 							</div>
 							<InputText id="Login" @bind-Value="_registrationRequest.Login" class="form-control" placeholder="Login"></InputText>
-							<br />
-							<ValidationMessage For="@(() => _registrationRequest.Login)" />
 						</div>
+						<ValidationMessage For="@(() => _registrationRequest.Login)" />
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
 								<span class="input-group-text">
-									<svg class="c-icon">
-										<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-lock-locked"></use>
-									</svg>
+									<i class="fa fa-lock"></i>
 								</span>
 							</div>
 							<input @bind="_registrationRequest.Password" class="form-control" type="password" placeholder="Password">
 						</div>
+						<ValidationMessage For="@(() => _registrationRequest.Password)" />
 						<div class="input-group mb-4">
 							<div class="input-group-prepend">
 								<span class="input-group-text">
-									<svg class="c-icon">
-										<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-lock-locked"></use>
-									</svg>
+									<i class="fa fa-lock"></i>
 								</span>
 							</div>
 							<input @bind="_registrationRequest.ConfirmPassword" class="form-control" type="password" placeholder="Repeat password">
 						</div>
+						<ValidationMessage For="@(() => _registrationRequest.ConfirmPassword)" />
+						<br />
 						@if (_showAlert)
 						{
 							<Alert Text="@_errorMessage" Type="danger"></Alert>

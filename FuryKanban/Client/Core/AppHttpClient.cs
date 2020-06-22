@@ -38,7 +38,10 @@ namespace FuryKanban.Client.Core
 			var result = await this.GetFromJsonAsync<TResult>(url);
 
 			await _loaderService.LoadEnd();
-			
+
+			//todo delete
+			OnApiError?.Invoke(this, result);
+
 			return result;
 		}
 

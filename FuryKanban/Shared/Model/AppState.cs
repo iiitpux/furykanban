@@ -30,6 +30,7 @@ namespace FuryKanban.Shared.Model
 
 			public int StageId { set; get; }
 			
+			[Required]
 			public string Title { set; get; }
 			
 			public string Body { set; get; }

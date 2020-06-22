@@ -11,6 +11,7 @@ namespace FuryKanban.DataLayer.Dto
         [Key]
         public int Id { set; get; }
         
+        [Required]
         public string Title { set; get; }
 
         public string Body { set; get; }

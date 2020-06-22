@@ -39,36 +39,34 @@ namespace FuryKanban.Client.Core.Security
 
 		public async Task<RegistrationResponse> RegistrationAsync(RegistrationRequest registrationRequest)
 		{
-			var response = await _httpClient.PostAsJsonAsync("api/security/registration", registrationRequest);
-			
-			if (response.IsSuccessStatusCode)
+			var response = await _httpClient.PostAsyncEx<RegistrationResponse, RegistrationRequest>("api/security/registration", registrationRequest, null);
+
+			if (!response.HasError)
 			{
-				var result = await response.Content.ReadFromJsonAsync<RegistrationResponse>();
-				
-				if (result.HasError)
-					return result;
-
-				await _localStorage.SetItemAsync<string>(Const.Token, result.Token);
+				await _localStorage.SetItemAsync<string>(Const.Token, response.Token);
 				AuthenticationStateChange();
-
-				return result;
 			}
 
-			return new RegistrationResponse()
+			return response;
+		}
+
+		public async Task<LoginResponse> Login(LoginRequest loginRequest)
+		{
+			var response = await _httpClient.PostAsyncEx<LoginResponse, LoginRequest>("api/security/login", loginRequest, null);
+
+			if (!response.HasError)
 			{
-				ErrorMessage = response.StatusCode.ToString(),
-				HasError = true
-			};
+				await _localStorage.SetItemAsync<string>(Const.Token, response.Token);
+				AuthenticationStateChange();
+			}
+
+			return response;
 		}
 
-		public void Login()
+		public async Task LogOut()
 		{
-			throw new NotImplementedException();
-		}
-
-		public void LogOut()
-		{
-			throw new NotImplementedException();
+			await _localStorage.RemoveItemAsync(Const.Token);
+			NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 		}
 
 		public void AuthenticationStateChange()

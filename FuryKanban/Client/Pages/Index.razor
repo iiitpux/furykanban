@@ -14,15 +14,6 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject DragndropService DragndropService
 @inject LoaderService LoaderService
-@foreach (var error in ErrorList)
-{
-	<div class="row">
-		<div class="alert alert-warning alert-dismissible fade show" role="alert">
-			<strong>@error.ErrorMessage</strong>.
-			<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-		</div>
-	</div>
-}
 <AuthorizeView>
 	<NotAuthorized>
 		<RedirectToLogin />
@@ -44,7 +35,7 @@
 						</StageComponent>
 					</div>
 				}
-				<ColumnEdit></ColumnEdit>
+				<AddStageComponent></AddStageComponent>
 			</div>
 		</div>
 	</Authorized>

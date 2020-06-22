@@ -1,0 +1,20 @@
+﻿@using BlazorAnimate
+@using FuryKanban.Client.Shared.Components
+@inject FuryKanban.Client.Core.StageService StateService
+
+<div class="col-4 col-lg-4 col-md-4 col-xs-4">
+	<Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.5)">
+		@if (!ShowEdit)
+		{
+<button href="#" class="btn btn-success" @onclick="() => ShowEdit = !ShowEdit">Add column</button> }
+				else
+				{
+<div class="card card-accent-warning">
+	<div class="card-header">
+		<StageEditComponent Stage="new FuryKanban.Shared.Model.AppState.Stage()" AfterSave="() => ShowEdit = !ShowEdit"></StageEditComponent>
+	</div>
+</div>}
+	</Animate>
+</div>
+@code { private bool ShowEdit = false;
+			private FuryKanban.Shared.Model.AppState.Stage _stage = new FuryKanban.Shared.Model.AppState.Stage(); }

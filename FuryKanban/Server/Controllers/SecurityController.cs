@@ -29,21 +29,11 @@ namespace FuryKanban.Server.Controllers
 		{
 			return await _securityService.RegistrationAsync(registrationRequest);
 		}
-		
-		// [HttpGet]
-		// public RegistrationRequest Get()
-		// {
-		// 	return new RegistrationRequest() { 
-		// 		Login = "123",
-		// 		Password = "123"
-		// 	};
-		// 	//return await _securityService.RegistrationAsync(registration);
-		// }
-		//
-		// [HttpPost("{login}")]
-		// public async Task<bool> TryLogin(LoginRequest login)
-		// {
-		// 	return false;
-		// }
+
+		[HttpPost("login")]
+		public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
+		{
+			return await _securityService.LoginAsync(loginRequest);
+		}
 	}
 }

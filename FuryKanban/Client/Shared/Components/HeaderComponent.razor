@@ -1,9 +1,10 @@
-﻿@inject FuryKanban.Client.Core.LoaderService LoaderService
+﻿@using FuryKanban.Shared.Interfaces
+@using FuryKanban.Client.Core
+@inject FuryKanban.Client.Core.LoaderService LoaderService
 @inject FuryKanban.Client.Core.AppStateService AppStateService
+@inject FuryKanban.Client.Core.Security.SecurityService SecurityService
+@inject AppHttpClient Http
 <header class="c-header c-header-light c-header-fixed">
-	@*<div class="c-header-brand">
-			<img src="/FuryKanban.png" class="c-header-brand-center fk-brand-logo" />
-		</div>*@
 	<ul class="c-header-nav d-md-down-none">
 		<li class="c-header-nav-item px-3">
 			@if (_showLoader)
@@ -22,7 +23,7 @@
 				<div class="btn-group" role="group">
 					@if (AppStateService.State.UndoList.Any())
 					{
-						<button class="btn btn-secondary" type="button" @onclick="async () => await HistoryClick(AppStateService.State.UndoList.OrderByDescending(p=>p.Id).First().Id)"><i class="fa fa-undo"></i></button>
+						<button class="btn btn-secondary" title="Undo" type="button" @onclick="async () => await HistoryClick(AppStateService.State.UndoList.OrderByDescending(p=>p.Id).First().Id)"><i class="fa fa-undo"></i></button>
 						<button class="btn btn-secondary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
 						<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="position: absolute; left: 0px; top: 0px; margin: 0px; right: auto; bottom: auto; transform: translate(0px, 35px);" data-popper-placement="bottom-start">
 							@foreach (var item in AppStateService.State.UndoList.OrderByDescending(p => p.Id))
@@ -40,69 +41,31 @@
 			</div>
 			@*todo- revert to table<button class="btn btn-secondary" type="button"><i class="fa fa-repeat"></i></button>*@
 		</li>
+		@if (!String.IsNullOrWhiteSpace(_errorText))
+		{
+			<li class="c-header-nav-item px-3">
+				<button class="btn btn-danger" @onclick="() => _errorText=String.Empty"> @_errorText</button>
+			</li>
+		}
 	</ul>
 	<ul class="c-header-nav  mfs-auto">
-		<li class="c-header-nav-item dropdown">
-			<a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-				<div class="c-avatar">Signout</div>
-			</a>
-			<div class="dropdown-menu dropdown-menu-right pt-0">
-				<div class="dropdown-header bg-light py-2"><strong>Account</strong></div><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-bell"></use>
-					</svg> Updates<span class="badge badge-info mfs-auto">42</span>
-				</a><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-envelope-open"></use>
-					</svg> Messages<span class="badge badge-success mfs-auto">42</span>
-				</a><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-task"></use>
-					</svg> Tasks<span class="badge badge-danger mfs-auto">42</span>
-				</a><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-comment-square"></use>
-					</svg> Comments<span class="badge badge-warning mfs-auto">42</span>
-				</a>
-				<div class="dropdown-header bg-light py-2"><strong>Settings</strong></div><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-user"></use>
-					</svg> Profile
-				</a><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-settings"></use>
-					</svg> Settings
-				</a><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-credit-card"></use>
-					</svg> Payments<span class="badge badge-secondary mfs-auto">42</span>
-				</a><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-file"></use>
-					</svg> Projects<span class="badge badge-primary mfs-auto">42</span>
-				</a>
-				<div class="dropdown-divider"></div><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-lock-locked"></use>
-					</svg> Lock Account
-				</a><a class="dropdown-item" href="#">
-					<svg class="c-icon mfe-2">
-						<use xlink:href="vendors/coreui/icons/svg/free.svg#cil-account-logout"></use>
-					</svg> Logout
-				</a>
-			</div>
+		<li class="c-header-nav-item">
+			<a class="btn" title="Logout" @onclick="async () => await SecurityService.LogOut()"><i class="fa fa-sign-out"></i></a>
 		</li>
 	</ul>
 </header>
 
 @code {
 	private bool _showLoader { set; get; } = false;
+	private string _errorText = "";
+
 	protected override async Task OnInitializedAsync()
 	{
 		//todo- unsub
 		LoaderService.OnStart += ShowLoader;
 		LoaderService.OnEnd += HideLoader;
 		AppStateService.OnStateChanged += OnStateChanged;
+		Http.OnApiError += OnApiError;
 	}
 	private void ShowLoader(object sender, EventArgs e)
 	{
@@ -124,5 +87,11 @@
 	private async Task HistoryClick(int id)
 	{
 		await AppStateService.LoadHistoryAsync(id);
+	}
+
+	private void OnApiError(object sender, IErrorResult error)
+	{
+		_errorText = error.ErrorMessage;
+		StateHasChanged();
 	}
 }

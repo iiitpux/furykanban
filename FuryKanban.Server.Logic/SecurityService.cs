@@ -74,9 +74,31 @@ namespace FuryKanban.Server.Logic
 			};
 		}
 
-		//public async Task<LoginResponse> LoginAsync(LoginRequest login)
-		//{
+		public async Task<LoginResponse> LoginAsync(LoginRequest login)
+		{
+			var user = await _appDbContext.Users.SingleOrDefaultAsync(p => p.Login == login.Login);
+			if (user == null)
+				return new LoginResponse() { HasError = true, ErrorMessage = "User or password incorrect" };
 
-		//}
+			var password = Hashing.GetPasswordHash(login.Password, user.Salt);
+			
+			if(user.Password != password)
+				return new LoginResponse() { HasError = true, ErrorMessage = "User or password incorrect" };
+
+			var token = new TokenDto()
+			{
+				Code = Guid.NewGuid().ToString(),
+				CreatedDate = DateTime.Now,
+				UserId = user.Id
+			};
+
+			_appDbContext.Tokens.Add(token);
+			await _appDbContext.SaveChangesAsync();
+
+			return new LoginResponse()
+			{
+				Token = token.Code
+			};
+		}
 	}
 }

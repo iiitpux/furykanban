@@ -9,6 +9,7 @@ namespace FuryKanban.Server.Contract
 	public interface ISecurityService
 	{
 		Task<RegistrationResponse> RegistrationAsync(RegistrationRequest registration);
+		Task<LoginResponse> LoginAsync(LoginRequest login);
 		Task<int?> GetUserIdByTokenAsync(string token);
 	}
 }

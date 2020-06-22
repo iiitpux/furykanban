@@ -10,7 +10,9 @@ namespace FuryKanban.Shared.Model.Security
 	{
 		[Required]
 		public string Login { set; get; }
+		[Required]
 		public string Password { set; get; }
+		[CompareProperty(nameof(Password), ErrorMessage = "The Password didn't match.")]
 		public string ConfirmPassword { set; get; }
 	}
 }

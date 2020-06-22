@@ -1,6 +1,6 @@
 ﻿@inject FuryKanban.Client.Core.IssueService IssueService
 @inject FuryKanban.Client.Core.LoaderService LoaderService
-<div class="card">
+<div class="card" style="margin-bottom:0px">
 	<EditForm model="@Issue" OnValidSubmit="HandleValidSubmit">
 		<DataAnnotationsValidator />
 		<div class="card-header">
@@ -26,7 +26,15 @@
 					}
 				</div>
 				<div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
-					<button @onclick="() => AfterCancel.InvokeAsync(null)" class="btn btn-block btn-secondary" type="button">Cancel</button>
+					@if (!_isLoading)
+					{
+						<button @onclick="() => AfterCancel.InvokeAsync(null)" class="btn btn-block btn-secondary" type="button">Cancel</button>
+					}
+					else
+					{
+						<button disabled class="btn btn-block btn-secondary" type="button">Cancel</button>
+					}
+
 				</div>
 			</div>
 		</div>
@@ -49,7 +57,7 @@
 	{
 		_isLoading = true;
 
-		if(Issue.Id==0)
+		if (Issue.Id == 0)
 		{
 			await IssueService.InsertIssueAsync(Issue);
 		}
