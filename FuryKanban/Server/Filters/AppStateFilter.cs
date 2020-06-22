@@ -1,6 +1,7 @@
 ﻿using FuryKanban.DataLayer;
 using FuryKanban.Server.Contract;
 using FuryKanban.Server.Logic;
+using FuryKanban.Shared;
 using FuryKanban.Shared.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -24,45 +25,28 @@ namespace FuryKanban.Server.Filters
 
 		public void OnActionExecuting(ActionExecutingContext context)
 		{
-			//todo change to header actionName
-			var method = context.HttpContext.Request.Method;
 			var action = String.Empty;
-			switch (method)
-			{
-				case "POST":
-					{
-						action = "Insert";
-						break;
-					}
-				case "PUT":
-					{
-						action = "Update";
-						break;
-					}
-				case "DELETE":
-					{
-						action = "Delete";
-						break;
-					}
-			}
+			if (context.HttpContext.Request.Headers.ContainsKey(Const.ActionTitle))
+				action = context.HttpContext.Request.Headers[Const.ActionTitle].ToString();
+
 			if (String.IsNullOrWhiteSpace(action))
 				return;
 
-			_appStateService.SetHistoryStateAsync(_authUser.Id, action);
+			_appStateService.SetHistoryStateAsync(_authUser.Id, action).GetAwaiter().GetResult();
 		}
 
 		public void OnActionExecuted(ActionExecutedContext context)
 		{
+			var error = ((ObjectResult)context.Result)?.Value as IErrorResult;
+			if (!error.HasError)
+			{
+				_appStateService.SaveHistoryStateAsync();
+			}
+
 			var result = ((ObjectResult)context.Result)?.Value as IAppStateResult;
 			if (result != null)
 			{
 				result.AppState = _appStateService.GetStateAsync(_authUser.Id).GetAwaiter().GetResult();
-			}
-
-			var error = ((ObjectResult)context.Result).Value as IErrorResult;
-			if(!error.HasError)
-			{
-				_appStateService.SaveHistoryStateAsync();
 			}
 		}
 	}

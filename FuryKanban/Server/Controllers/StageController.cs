@@ -39,10 +39,5 @@ namespace FuryKanban.Server.Controllers
 		{
 			return await _stageService.DeleteAsync(id, _authUser.Id);
 		}
-
-		//private bool ProductsExists(int id)
-		//{
-		//    return _context.Products.Any(e => e.ProductId == id);
-		//}
 	}
 }

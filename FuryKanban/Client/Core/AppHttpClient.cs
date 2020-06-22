@@ -53,6 +53,12 @@ namespace FuryKanban.Client.Core
 				this.DefaultRequestHeaders.Add(Const.Token, token);
 			}
 
+			if (!String.IsNullOrWhiteSpace(actionName))
+			{
+				this.DefaultRequestHeaders.Remove(Const.ActionTitle);
+				this.DefaultRequestHeaders.Add(Const.ActionTitle, actionName);
+			}
+
 			var response = await this.PostAsJsonAsync<TValue>(url, model);
 
 			await _loaderService.LoadEnd();
@@ -90,6 +96,12 @@ namespace FuryKanban.Client.Core
 				this.DefaultRequestHeaders.Add(Const.Token, token);
 			}
 
+			if (!String.IsNullOrWhiteSpace(actionName))
+			{
+				this.DefaultRequestHeaders.Remove(Const.ActionTitle);
+				this.DefaultRequestHeaders.Add(Const.ActionTitle, actionName);
+			}
+
 			var response = await this.PutAsJsonAsync<TValue>(url, model);
 
 			await _loaderService.LoadEnd();
@@ -125,6 +137,12 @@ namespace FuryKanban.Client.Core
 			{
 				this.DefaultRequestHeaders.Remove(Const.Token);
 				this.DefaultRequestHeaders.Add(Const.Token, token);
+			}
+
+			if(!String.IsNullOrWhiteSpace(actionName))
+			{
+				this.DefaultRequestHeaders.Remove(Const.ActionTitle);
+				this.DefaultRequestHeaders.Add(Const.ActionTitle, actionName);
 			}
 
 			var response = await this.DeleteAsync(url);

@@ -60,7 +60,19 @@ namespace FuryKanban.Server.Logic
 
 		public async Task SetHistoryStateAsync(int userId, string title)
 		{
-			var state = await _appDbContext.Stages.Where(p => p.UserId == userId).Include(p => p.Issues).ToListAsync();
+			var state = await _appDbContext.Stages.AsNoTracking().Where(p => p.UserId == userId).Include(p => p.Issues).ToListAsync();
+
+			foreach (var stage in state)
+			{
+				stage.User = null;
+				foreach (var issue in stage.Issues)
+				{
+					issue.Stage = null;
+					issue.NextIssue = null;
+					issue.User = null;
+				}
+			}
+
 			_bufferHistory = new HistoryDto()
 			{
 				Body = JsonConvert.SerializeObject(state),
@@ -115,12 +127,14 @@ namespace FuryKanban.Server.Logic
 				//todo- nextissueid
 				foreach (var issue in stage.Issues)
 				{
-					newStage.Issues.Add(new IssueDto() { 
+					newStage.Issues.Add(new IssueDto() {
+						Id = issue.Id,
 						Body = issue.Body,
 						CreatedDateTime = issue.CreatedDateTime,
 						StageId = issue.StageId,
 						Title = issue.Title,
-						UserId = issue.UserId
+						UserId = issue.UserId,
+						NextIssueId = issue.NextIssueId
 					});
 				}
 				_appDbContext.Stages.Add(newStage);

@@ -35,7 +35,7 @@ namespace FuryKanban.Client.Core
 
 		public async Task<IssueChangeResponse> DeleteIssueAsync(AppState.Issue issue)
 		{
-			var result = await _httpClient.DeleteAsyncEx<IssueChangeResponse>($"api/issue/{issue.Id}", $"Delete issue '{issue.Id}'");
+			var result = await _httpClient.DeleteAsyncEx<IssueChangeResponse>($"api/issue/{issue.Id}", $"Delete issue '{issue.Title}'");
 
 			OnStateChanged?.Invoke(this, result.AppState);
 

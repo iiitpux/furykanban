@@ -20,17 +20,25 @@
 		<li class="c-header-nav-item px-3">
 			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
 				<div class="btn-group" role="group">
-					<button class="btn btn-secondary" type="button"><i class="fa fa-undo"></i></button>
-					<button class="btn btn-secondary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
-					<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="position: absolute; left: 0px; top: 0px; margin: 0px; right: auto; bottom: auto; transform: translate(0px, 35px);" data-popper-placement="bottom-start">
-						@foreach (var item in AppStateService.State.UndoList.OrderByDescending(p => p.Id))
-						{
-							<a class="dropdown-item" @onclick="async() => await HistoryClick(item.Id)">@item.Title @item.Id</a>
-						}
-					</div>
+					@if (AppStateService.State.UndoList.Any())
+					{
+						<button class="btn btn-secondary" type="button" @onclick="async () => await HistoryClick(AppStateService.State.UndoList.OrderByDescending(p=>p.Id).First().Id)"><i class="fa fa-undo"></i></button>
+						<button class="btn btn-secondary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
+						<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="position: absolute; left: 0px; top: 0px; margin: 0px; right: auto; bottom: auto; transform: translate(0px, 35px);" data-popper-placement="bottom-start">
+							@foreach (var item in AppStateService.State.UndoList.OrderByDescending(p => p.Id))
+							{
+								<a class="dropdown-item" @onclick="async () => await HistoryClick(item.Id)">@item.Title</a>
+							}
+						</div>
+					}
+					else
+					{
+						<button class="btn btn-secondary" type="button" disabled><i class="fa fa-undo"></i></button>
+						<button class="btn btn-secondary dropdown-toggle" disabled id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
+					}
 				</div>
 			</div>
-			<button class="btn btn-secondary" type="button"><i class="fa fa-repeat"></i></button>
+			@*todo- revert to table<button class="btn btn-secondary" type="button"><i class="fa fa-repeat"></i></button>*@
 		</li>
 	</ul>
 	<ul class="c-header-nav  mfs-auto">
