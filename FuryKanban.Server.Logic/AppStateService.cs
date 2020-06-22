@@ -60,7 +60,7 @@ namespace FuryKanban.Server.Logic
 
 		public async Task SetHistoryStateAsync(int userId, string title)
 		{
-			var state = await _appDbContext.Stages.AsNoTracking().Where(p => p.UserId == userId).Include(p => p.Issues).ToListAsync();
+			var state = await _appDbContext.Stages.Include(p => p.Issues).AsNoTracking().Where(p => p.UserId == userId).ToListAsync();
 
 			foreach (var stage in state)
 			{
@@ -124,19 +124,25 @@ namespace FuryKanban.Server.Logic
 					UserId = stage.UserId,
 					Issues = new List<IssueDto>()
 				};
-				//todo- nextissueid
-				foreach (var issue in stage.Issues)
+
+				var newNextIssue = (IssueDto)null;
+				var lastIssue = stage.Issues.SingleOrDefault(p => p.NextIssueId == null);
+				while(lastIssue != null)
 				{
-					newStage.Issues.Add(new IssueDto() {
-						Id = issue.Id,
-						Body = issue.Body,
-						CreatedDateTime = issue.CreatedDateTime,
-						StageId = issue.StageId,
-						Title = issue.Title,
-						UserId = issue.UserId,
-						NextIssueId = issue.NextIssueId
-					});
+					newNextIssue = new IssueDto()
+					{
+						Body = lastIssue.Body,
+						CreatedDateTime = lastIssue.CreatedDateTime,
+						Stage = newStage,
+						Title = lastIssue.Title,
+						UserId = lastIssue.UserId,
+						NextIssue = newNextIssue
+					};
+					_appDbContext.Issues.Add(newNextIssue);
+
+					lastIssue = stage.Issues.SingleOrDefault(p => p.NextIssueId == lastIssue.Id);
 				}
+
 				_appDbContext.Stages.Add(newStage);
 			}
 

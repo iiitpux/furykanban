@@ -37,7 +37,15 @@ namespace FuryKanban.Server.Logic
 				};
 			}
 
-			var lastIssue = await _appDbContext.Issues.SingleOrDefaultAsync(p => p.StageId == stage.Id && !p.NextIssueId.HasValue);
+			var allNextIds = await _appDbContext.Issues.Where(p => p.StageId == stage.Id
+					&& p.NextIssueId.HasValue)
+					.Select(p => p.NextIssueId.Value).ToListAsync();
+			var first = await _appDbContext.Issues.SingleOrDefaultAsync(p => !allNextIds.Contains(p.Id)
+				&& p.StageId == stage.Id);
+
+			int? nextIssueId = null;
+			if (first != null)
+				nextIssueId = first.Id;
 
 			var issueDto = new IssueDto()
 			{
@@ -45,17 +53,11 @@ namespace FuryKanban.Server.Logic
 				CreatedDateTime = DateTime.Now,
 				StageId = issue.StageId,
 				Title = issue.Title,
-				UserId = userId
+				UserId = userId,
+				NextIssueId = nextIssueId
 			};
 
 			_appDbContext.Issues.Add(issueDto);
-
-			await _appDbContext.SaveChangesAsync();
-
-			if(lastIssue != null)
-			{
-				lastIssue.NextIssueId = issueDto.Id;
-			}
 
 			await _appDbContext.SaveChangesAsync();
 
