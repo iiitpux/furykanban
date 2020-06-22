@@ -16,14 +16,17 @@ namespace FuryKanban.Client.Core
 		public event EventHandler<IErrorResult> OnApiError;
 
 		private ILocalStorageService _localStorageService;
+		private LoaderService _loaderService;
 
-		public AppHttpClient(ILocalStorageService localStorageService)
+		public AppHttpClient(ILocalStorageService localStorageService, LoaderService loaderService)
 		{
 			_localStorageService = localStorageService;
+			_loaderService = loaderService;
 		}
 
 		public async Task<TResult> GetAsyncEx<TResult>(string url) where TResult : IErrorResult, new()
 		{
+			await _loaderService.LoadStart();
 			var token = await _localStorageService.GetItemAsync<string>(Const.Token);
 
 			if (!String.IsNullOrWhiteSpace(token))
@@ -32,11 +35,17 @@ namespace FuryKanban.Client.Core
 				this.DefaultRequestHeaders.Add(Const.Token, token);
 			}
 
-			return await this.GetFromJsonAsync<TResult>(url);
+			var result = await this.GetFromJsonAsync<TResult>(url);
+
+			await _loaderService.LoadEnd();
+			
+			return result;
 		}
 
 		public async Task<TResult> PostAsyncEx<TResult, TValue>(string url, TValue model, string actionName) where TResult : IErrorResult, new()
 		{
+			await _loaderService.LoadStart();
+
 			var token = await _localStorageService.GetItemAsync<string>(Const.Token);
 			if (!String.IsNullOrWhiteSpace(token))
 			{
@@ -45,6 +54,8 @@ namespace FuryKanban.Client.Core
 			}
 
 			var response = await this.PostAsJsonAsync<TValue>(url, model);
+
+			await _loaderService.LoadEnd();
 
 			if (!response.IsSuccessStatusCode)
 			{
@@ -70,6 +81,8 @@ namespace FuryKanban.Client.Core
 
 		public async Task<TResult> PutAsyncEx<TResult, TValue>(string url, TValue model, string actionName) where TResult : IErrorResult, new()
 		{
+			await _loaderService.LoadStart();
+
 			var token = await _localStorageService.GetItemAsync<string>(Const.Token);
 			if (!String.IsNullOrWhiteSpace(token))
 			{
@@ -78,6 +91,8 @@ namespace FuryKanban.Client.Core
 			}
 
 			var response = await this.PutAsJsonAsync<TValue>(url, model);
+
+			await _loaderService.LoadEnd();
 
 			if (!response.IsSuccessStatusCode)
 			{
@@ -103,6 +118,8 @@ namespace FuryKanban.Client.Core
 
 		public async Task<TResult> DeleteAsyncEx<TResult>(string url, string actionName) where TResult : IErrorResult, new()
 		{
+			await _loaderService.LoadStart();
+
 			var token = await _localStorageService.GetItemAsync<string>(Const.Token);
 			if (!String.IsNullOrWhiteSpace(token))
 			{
@@ -111,6 +128,8 @@ namespace FuryKanban.Client.Core
 			}
 
 			var response = await this.DeleteAsync(url);
+
+			await _loaderService.LoadEnd();
 
 			if (!response.IsSuccessStatusCode)
 			{
@@ -133,17 +152,5 @@ namespace FuryKanban.Client.Core
 
 			return result;
 		}
-
-		//public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-		//{
-		//	var token = await _localStorageService.GetItemAsync<string>(Const.Token);
-		//	if (!String.IsNullOrWhiteSpace(token))
-		//	{
-		//		this.DefaultRequestHeaders.Remove(Const.Token);
-		//		this.DefaultRequestHeaders.Add(Const.Token, token);
-		//	}
-
-		//	return await base.SendAsync(request, cancellationToken);
-		//}
 	}
 }

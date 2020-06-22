@@ -22,7 +22,7 @@ namespace FuryKanban.Client
 			builder.RootComponents.Add<App>("app");
 
 			builder.Services.AddBlazoredLocalStorage();
-			builder.Services.AddScoped(provider => new AppHttpClient(provider.GetRequiredService<ILocalStorageService>()) { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+			builder.Services.AddScoped(provider => new AppHttpClient(provider.GetRequiredService<ILocalStorageService>(), provider.GetRequiredService<LoaderService>()) { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 			builder.Services.AddScoped<StageService>();
 			builder.Services.AddScoped<IssueService>();
 			builder.Services.AddScoped<AppStateService>();

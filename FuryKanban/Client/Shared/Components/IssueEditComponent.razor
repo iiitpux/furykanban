@@ -47,7 +47,6 @@
 
 	private async Task HandleValidSubmit()
 	{
-		await LoaderService.LoadStart();
 		_isLoading = true;
 
 		if(Issue.Id==0)
@@ -60,7 +59,7 @@
 		}
 
 		await AfterSave.InvokeAsync(null);
-		await LoaderService.LoadEnd();
+
 		_isLoading = false;
 	}
 }

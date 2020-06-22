@@ -62,10 +62,8 @@
 
 		if (user.Identity.IsAuthenticated)
 		{
-			await LoaderService.LoadStart();
 			var appState = await Http.GetAsyncEx<FuryKanban.Shared.Model.AppStateResponse>("api/app");
 			AppStateService.SetState(appState.AppState);
-			await LoaderService.LoadEnd();
 		}
 
 		//todo unsub
