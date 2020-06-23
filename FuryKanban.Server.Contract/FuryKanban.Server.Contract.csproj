@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FuryKanban\Shared\FuryKanban.Shared.csproj" />
+    <ProjectReference Include="..\FuryKanban.Shared\FuryKanban.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FuryKanban.DataLayer\FuryKanban.DataLayer.csproj" />
     <ProjectReference Include="..\FuryKanban.Server.Contract\FuryKanban.Server.Contract.csproj" />
-    <ProjectReference Include="..\FuryKanban\Shared\FuryKanban.Shared.csproj" />
+    <ProjectReference Include="..\FuryKanban.Shared\FuryKanban.Shared.csproj" />
   </ItemGroup>
 
 </Project>
