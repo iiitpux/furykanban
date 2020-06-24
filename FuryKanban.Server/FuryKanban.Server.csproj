@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>72492043-c290-4eb4-8b3f-af4585fe335a</UserSecretsId>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
