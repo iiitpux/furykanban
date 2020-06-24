@@ -31,9 +31,6 @@ namespace FuryKanban.Client.Core.Security
 			if (String.IsNullOrWhiteSpace(token))
 				return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
-			//todo- not work
-			//_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", token);
-			
 			return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity("token")));
 		}
 

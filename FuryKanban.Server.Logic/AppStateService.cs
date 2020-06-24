@@ -21,7 +21,7 @@ namespace FuryKanban.Server.Logic
 		{
 			_appDbContext = appDbContext;
 		}
-		//todo- history
+
 		public async Task<AppState> GetStateAsync(int userId)
 		{
 			var stagesDto = await _appDbContext.Stages.Where(p => p.UserId == userId).Include(p => p.Issues).ToListAsync();
@@ -102,7 +102,6 @@ namespace FuryKanban.Server.Logic
 			if (history == null || history.UserId != userId)
 				return new AppStateResponse()
 				{
-					HasError = true,
 					ErrorMessage = "History not found"
 				};
 

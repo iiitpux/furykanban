@@ -12,27 +12,23 @@ using System.Threading.Tasks;
 
 namespace FuryKanban.Server.Logic
 {
-	//todo- logger?
 	public class IssueService : IIssueService
 	{
 		private AppDbContext _appDbContext;
-		private ILogger<IssueService> _logger;
 
-		public IssueService(AppDbContext appDbContext, ILogger<IssueService> logger)
+		public IssueService(AppDbContext appDbContext)
 		{
 			_appDbContext = appDbContext;
-			_logger = logger;
 		}
 
 		public async Task<IssueChangeResponse> InsertAsync(AppState.Issue issue, int userId)
 		{
 			var stage = await _appDbContext.Stages.FindAsync(issue.StageId);
-			
-			if (stage == null || (stage != null && stage.UserId != userId))
+
+			if (stage == null || stage.UserId != userId)
 			{
 				return new IssueChangeResponse()
 				{
-					HasError = true,
 					ErrorMessage = "Issue not found"
 				};
 			}
@@ -43,7 +39,7 @@ namespace FuryKanban.Server.Logic
 			var first = await _appDbContext.Issues.SingleOrDefaultAsync(p => !allNextIds.Contains(p.Id)
 				&& p.StageId == stage.Id);
 
-			int? nextIssueId = null;
+			var nextIssueId = default(int?);
 			if (first != null)
 				nextIssueId = first.Id;
 
@@ -68,10 +64,9 @@ namespace FuryKanban.Server.Logic
 		{
 			var exist = await _appDbContext.Issues.Include(p=>p.Stage).SingleOrDefaultAsync(p=>p.Id == issue.Id);
 
-			if(exist == null || exist.Stage == null || exist.Stage.UserId != userId)
+			if(exist?.Stage == null || exist.Stage.UserId != userId)
 				return new IssueChangeResponse()
 				{
-					HasError = true,
 					ErrorMessage = "Issue not found"
 				};
 
@@ -86,10 +81,9 @@ namespace FuryKanban.Server.Logic
 		{
 			var exist = await _appDbContext.Issues.Include(p => p.Stage).SingleOrDefaultAsync(p => p.Id == id);
 
-			if (exist == null || exist.Stage == null || exist.Stage.UserId != userId)
+			if (exist?.Stage == null || exist.Stage.UserId != userId)
 				return new IssueChangeResponse()
 				{
-					HasError = true,
 					ErrorMessage = "Issue not found"
 				};
 
@@ -107,10 +101,9 @@ namespace FuryKanban.Server.Logic
 			//remove from old position
 			var exist = await _appDbContext.Issues.Include(p => p.Stage).SingleOrDefaultAsync(p => p.Id == issueReorder.Id);
 
-			if (exist == null || exist.Stage == null || exist.Stage.UserId != userId)
+			if (exist?.Stage == null || exist.Stage.UserId != userId)
 				return new IssueChangeResponse()
 				{
-					HasError = true,
 					ErrorMessage = "Issue not found"
 				};
 
@@ -120,7 +113,6 @@ namespace FuryKanban.Server.Logic
 				if (existStage != null && existStage.UserId != userId)
 					return new IssueChangeResponse()
 					{
-						HasError = true,
 						ErrorMessage = "Issue not found"
 					};
 			}
@@ -148,7 +140,6 @@ namespace FuryKanban.Server.Logic
 				if (targetIssue == null || targetIssue.Stage == null || targetIssue.Stage.UserId != userId)
 					return new IssueChangeResponse()
 					{
-						HasError = true,
 						ErrorMessage = "Issue not found"
 					};
 

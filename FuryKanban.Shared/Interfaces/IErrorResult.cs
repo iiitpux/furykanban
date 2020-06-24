@@ -6,7 +6,7 @@ namespace FuryKanban.Shared.Interfaces
 {
 	public interface IErrorResult
 	{
-		bool HasError { set; get; }
+		bool HasError { get; }
 		string ErrorMessage { set; get; }
 	}
 }

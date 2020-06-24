@@ -222,3 +222,24 @@ app {
 .dragging {
     cursor: grabbing;
 }
+
+.middle-box {
+    margin: auto;
+    margin-top: 150px;
+    width: 700px;
+}
+
+.testimonial-group > .row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+    .testimonial-group > .row > .col-xs-4 {
+        flex: 0 0 auto;
+    }
+
+.col-xs-4 {
+    padding-bottom: 20px;
+    padding-top: 18px;
+}

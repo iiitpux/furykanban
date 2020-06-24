@@ -70,7 +70,6 @@ namespace FuryKanban.Client.Core
 			{
 				var errorResult = new TResult()
 				{
-					HasError = true,
 					ErrorMessage = response.StatusCode.ToString()
 				};
 				OnApiError?.Invoke(this, errorResult);
@@ -113,7 +112,6 @@ namespace FuryKanban.Client.Core
 			{
 				var errorResult = new TResult()
 				{
-					HasError = true,
 					ErrorMessage = response.StatusCode.ToString()
 				};
 				OnApiError?.Invoke(this, errorResult);
@@ -156,7 +154,6 @@ namespace FuryKanban.Client.Core
 			{
 				var errorResult = new TResult()
 				{
-					HasError = true,
 					ErrorMessage = response.StatusCode.ToString()
 				};
 				OnApiError?.Invoke(this, errorResult);

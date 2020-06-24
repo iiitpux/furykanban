@@ -17,7 +17,6 @@ namespace FuryKanban.Client.Core
 			_httpClient = httpClient;
 		}
 
-		//todo- общая часть для всех
 		public async Task<StageChangeResponse> EditStageAsync(AppState.Stage stage)
 		{
 			var result = await _httpClient.PostAsyncEx<StageChangeResponse, AppState.Stage>("api/stage", stage, $"Edit column '{stage.Title}'");

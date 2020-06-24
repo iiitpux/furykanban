@@ -36,16 +36,8 @@
 	{
 		_isLoading = true;
 
-		var response = await StateService.EditStageAsync(Stage);
-		if (response.HasError)
-		{
-			//_errorMessage = response.ErrorMessage;
-			//_showAlert = true;
-		}
-		else
-		{
-			//todo- update appstate
-		}
+		await StateService.EditStageAsync(Stage);
+		
 		_isLoading = false;
 		await AfterSave.InvokeAsync(null);
 	}

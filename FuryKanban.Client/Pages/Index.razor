@@ -57,18 +57,12 @@
 		}
 
 		//todo unsub
-		Http.OnApiError += OnApiError;
 		DragndropService.OnDrop +=async (sender, arg) => await Drop();
 	}
 
 	private void OnStateChanged(object sender, EventArgs e)
 	{
 		StateHasChanged();
-	}
-
-	private void OnApiError(object sender, IErrorResult error)
-	{
-		//todo- show error
 	}
 
 	public async Task Drop()

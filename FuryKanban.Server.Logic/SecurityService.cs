@@ -38,7 +38,7 @@ namespace FuryKanban.Server.Logic
 		{
 			var user = await _appDbContext.Users.SingleOrDefaultAsync(p => p.Login == registration.Login);
 			if (user != null)
-				return new RegistrationResponse() { HasError = true, ErrorMessage = "User with same login already exist" };
+				return new RegistrationResponse() { ErrorMessage = "User with same login already exist" };
 
 			string salt = Guid.NewGuid().ToString();
 			var newUser = new UserDto()
@@ -62,7 +62,7 @@ namespace FuryKanban.Server.Logic
 			if (!isValid)
 			{
 				_logger.Log(LogLevel.Error, "Model is not valid because " + string.Join(", ", results.Select(s => s.ErrorMessage).ToArray()));
-				return new RegistrationResponse() { HasError = true, ErrorMessage = "Server error" };
+				return new RegistrationResponse() { ErrorMessage = "Server error" };
 			}
 
 			await _appDbContext.AddAsync<UserDto>(newUser);
@@ -78,12 +78,12 @@ namespace FuryKanban.Server.Logic
 		{
 			var user = await _appDbContext.Users.SingleOrDefaultAsync(p => p.Login == login.Login);
 			if (user == null)
-				return new LoginResponse() { HasError = true, ErrorMessage = "User or password incorrect" };
+				return new LoginResponse() { ErrorMessage = "User or password incorrect" };
 
 			var password = Hashing.GetPasswordHash(login.Password, user.Salt);
 			
 			if(user.Password != password)
-				return new LoginResponse() { HasError = true, ErrorMessage = "User or password incorrect" };
+				return new LoginResponse() { ErrorMessage = "User or password incorrect" };
 
 			var token = new TokenDto()
 			{

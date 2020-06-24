@@ -8,7 +8,6 @@ namespace FuryKanban.Shared.Model
 {
 	public class AppState
 	{
-		//todo linkedlist
 		public List<Stage> Stages { set; get; }
 		public List<History> UndoList { set; get; }
 

@@ -12,16 +12,13 @@ using System.Threading.Tasks;
 
 namespace FuryKanban.Server.Logic
 {
-	//todo- logger?
 	public class StageService : IStageService
 	{
 		private AppDbContext _appDbContext;
-		private ILogger<StageService> _logger;
 
-		public StageService(AppDbContext appDbContext, ILogger<StageService> logger)
+		public StageService(AppDbContext appDbContext)
 		{
 			_appDbContext = appDbContext;
-			_logger = logger;
 		}
 
 		public async Task<StageChangeResponse> InsertOrUpdateAsync(AppState.Stage stage, int userId)
@@ -61,7 +58,6 @@ namespace FuryKanban.Server.Logic
 			if (stage == null || stage.UserId != userId)
 			{
 				return new StageChangeResponse() { 
-					HasError = true,
 					ErrorMessage = "Stage not found"
 				};
 			}
