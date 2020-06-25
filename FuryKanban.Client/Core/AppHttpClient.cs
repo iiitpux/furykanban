@@ -39,7 +39,9 @@ namespace FuryKanban.Client.Core
 
 			await _loaderService.LoadEnd();
 
-			//todo delete
+			if (!result.HasError)
+				return result;
+
 			OnApiError?.Invoke(this, result);
 
 			return result;

@@ -4,6 +4,8 @@
 @inject FuryKanban.Client.Core.AppStateService AppStateService
 @inject FuryKanban.Client.Core.Security.SecurityService SecurityService
 @inject AppHttpClient Http
+
+@implements IDisposable
 <header class="c-header c-header-light c-header-fixed">
 	<ul class="c-header-nav d-md-down-none">
 		<li class="c-header-nav-item px-3">
@@ -61,7 +63,6 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		//todo- unsub
 		LoaderService.OnStart += ShowLoader;
 		LoaderService.OnEnd += HideLoader;
 		AppStateService.OnStateChanged += OnStateChanged;
@@ -93,5 +94,13 @@
 	{
 		_errorText = error.ErrorMessage;
 		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		LoaderService.OnStart -= ShowLoader;
+		LoaderService.OnEnd -= HideLoader;
+		AppStateService.OnStateChanged -= OnStateChanged;
+		Http.OnApiError -= OnApiError;
 	}
 }
